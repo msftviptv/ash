@@ -1,1322 +1,1274 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام إدارة مكتب المحاماة</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     <style>
-        /* CSS كامل كما هو في كودك السابق مع التعديلات */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            direction: rtl;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            margin: 0;
             padding: 20px;
+            min-height: 100vh;
         }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
         .header {
             text-align: center;
-            color: white;
-            margin-bottom: 30px;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            border: 3px solid #1976d2;
         }
+        
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 2.5em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
-        .nav-tabs {
-            background: white;
-            border-radius: 15px;
-            padding: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        
+        .tabs {
             display: flex;
-            gap: 5px;
-            overflow-x: auto;
-        }
-        .nav-tab {
-            flex: 1;
-            min-width: 120px;
-            padding: 12px 20px;
-            border: none;
-            background: #f8f9fa;
-            color: #666;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
             justify-content: center;
-            gap: 8px;
-            white-space: nowrap;
         }
-        .nav-tab.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        
+        .tab-button {
+            padding: 15px 25px;
+            background: linear-gradient(45deg, #1976d2, #1565c0);
             color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+        }
+        
+        .tab-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
         }
-        .nav-tab:hover:not(.active) {
-            background: #e9ecef;
-            transform: translateY(-1px);
+        
+        .tab-button.active {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            transform: translateY(-2px);
         }
+        
         .tab-content {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            min-height: 500px;
-        }
-        .section {
             display: none;
+            animation: fadeIn 0.3s ease-in;
         }
-        .section.active {
+        
+        .tab-content.active {
             display: block;
         }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .form-section h3 {
+            color: #1976d2;
+            margin-top: 0;
+            font-size: 1.5em;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 10px;
+        }
+        
         .form-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
         }
+        
         .form-group {
             display: flex;
             flex-direction: column;
         }
-        .form-group label {
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
+        
+        label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
         }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+        
+        input, select, textarea {
             padding: 12px;
-            border: 2px solid #e9ecef;
+            border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: border-color 0.3s ease;
         }
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        
+        input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+            border-color: #1976d2;
+            box-shadow: 0 0 10px rgba(25, 118, 210, 0.2);
         }
+        
         .btn {
-            padding: 12px 25px;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            color: white;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102,126,234,0.4);
-        }
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-        .btn-info {
-            background: #17a2b8;
-            color: white;
-        }
-        .search-bar {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e9ecef;
             border-radius: 25px;
+            cursor: pointer;
             font-size: 16px;
-            margin-bottom: 20px;
-            background: #f8f9fa;
-        }
-        .search-bar:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-        }
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid #e9ecef;
+            font-weight: bold;
             transition: all 0.3s ease;
-            direction: rtl;
+            margin: 5px;
         }
-        .card:hover {
+        
+        .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
         }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f8f9fa;
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
         }
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #333;
+        
+        .btn-warning {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
         }
-        .card-actions {
-            display: flex;
-            gap: 8px;
+        
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow-x: auto;
         }
-        .status-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
         }
-        .status-active {
+        
+        th, td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: linear-gradient(45deg, #1976d2, #1565c0);
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        
+        .alert-success {
             background: #d4edda;
             color: #155724;
+            border: 2px solid #c3e6cb;
         }
-        .status-pending {
+        
+        .alert-warning {
             background: #fff3cd;
             color: #856404;
+            border: 2px solid #ffeaa7;
         }
-        .status-closed {
+        
+        .alert-danger {
             background: #f8d7da;
             color: #721c24;
+            border: 2px solid #f5c6cb;
         }
-        .dashboard-stats {
+        
+        .today-alerts {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
+        }
+        
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
+        
         .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 15px;
             text-align: center;
-            box-shadow: 0 8px 25px rgba(102,126,234,0.3);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+            transform: perspective(1000px) rotateY(0deg);
+            transition: transform 0.3s ease;
         }
+        
+        .stat-card:hover {
+            transform: perspective(1000px) rotateY(5deg) translateY(-5px);
+        }
+        
         .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        .stat-label {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        .upcoming-sessions {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-            direction: rtl;
-        }
-        .session-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-right: 4px solid #667eea;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            direction: rtl;
-        }
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-sizing: border-box;
-        }
-        .close {
-            color: #aaa;
-            float: left;
-            font-size: 28px;
+            font-size: 2.5em;
             font-weight: bold;
-            cursor: pointer;
+            margin: 10px 0;
         }
-        .close:hover {
-            color: #000;
-        }
-        .print-section {
+        
+        .download-section {
+            text-align: center;
             margin-top: 30px;
             padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border-radius: 15px;
+            color: white;
         }
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .print-content, .print-content * {
-                visibility: visible;
-            }
-            .print-content {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
+        
+        .download-btn {
+            background: white;
+            color: #2c3e50;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255,255,255,0.2);
         }
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            .header h1 {
-                font-size: 1.8rem;
-            }
-            .nav-tabs {
-                flex-direction: column;
-            }
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            .dashboard-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,255,255,0.3);
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1><i class="fas fa-balance-scale"></i> نظام إدارة مكتب المحاماة</h1>
-        <p>نظام شامل لإدارة القضايا والجلسات والموكلين</p>
-    </div>
-    <div class="nav-tabs">
-        <button class="nav-tab active" onclick="showSection('dashboard')">
-            <i class="fas fa-tachometer-alt"></i> لوحة التحكم
-        </button>
-        <button class="nav-tab" onclick="showSection('cases')">
-            <i class="fas fa-gavel"></i> القضايا
-        </button>
-        <button class="nav-tab" onclick="showSection('clients')">
-            <i class="fas fa-users"></i> الموكلين
-        </button>
-        <button class="nav-tab" onclick="showSection('sessions')">
-            <i class="fas fa-calendar-alt"></i> الجلسات
-        </button>
-        <button class="nav-tab" onclick="showSection('reports')">
-            <i class="fas fa-chart-bar"></i> التقارير
-        </button>
-    </div>
-    <div class="tab-content">
-        <!-- Dashboard Section -->
-        <div id="dashboard" class="section active">
-            <h2 style="margin-bottom: 20px; color: #333;">لوحة التحكم الرئيسية</h2>
-            <div class="dashboard-stats">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalCases">0</div>
-                    <div class="stat-label">إجمالي القضايا</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="activeCases">0</div>
-                    <div class="stat-label">القضايا النشطة</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="totalClients">0</div>
-                    <div class="stat-label">إجمالي الموكلين</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="upcomingSessions">0</div>
-                    <div class="stat-label">الجلسات القادمة</div>
-                </div>
+    <div class="container">
+        <div class="header">
+            <h1>⚖️ نظام إدارة مكتب المحاماة</h1>
+            <p>نظام متكامل لإدارة القضايا والموكلين والجلسات</p>
+        </div>
+
+        <!-- تنبيهات اليوم -->
+        <div class="today-alerts" id="todayAlerts">
+            <h3>🔔 تنبيهات اليوم - <span id="currentDate"></span></h3>
+            <div id="alertsList"></div>
+        </div>
+
+        <!-- إحصائيات سريعة -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCases">0</div>
+                <div>إجمالي القضايا</div>
             </div>
-            <div class="upcoming-sessions">
-                <h3 style="margin-bottom: 15px; color: #333;">الجلسات القادمة اليوم</h3>
-                <div id="todaySessions">
-                    <p style="text-align: center; color: #666; padding: 20px;">لا توجد جلسات مجدولة لليوم</p>
+            <div class="stat-card">
+                <div class="stat-number" id="totalClients">0</div>
+                <div>إجمالي الموكلين</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="upcomingSessions">0</div>
+                <div>جلسات قريبة</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingTasks">0</div>
+                <div>مهام معلقة</div>
+            </div>
+        </div>
+
+        <!-- أزرار التنقل -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('dashboard')">🏠 الرئيسية</button>
+            <button class="tab-button" onclick="showTab('cases')">📋 القضايا</button>
+            <button class="tab-button" onclick="showTab('clients')">👥 الموكلين</button>
+            <button class="tab-button" onclick="showTab('sessions')">⚖️ الجلسات</button>
+            <button class="tab-button" onclick="showTab('tasks')">📝 المهام الإدارية</button>
+            <button class="tab-button" onclick="showTab('calendar')">📅 التقويم</button>
+        </div>
+
+        <!-- محتوى الرئيسية -->
+        <div id="dashboard" class="tab-content active">
+            <div class="download-section">
+                <h3>📊 تحميل ملفات Excel</h3>
+                <p>يمكنك تحميل النماذج الجاهزة لبدء استخدام النظام</p>
+                <button class="download-btn" onclick="downloadExcel()">📥 تحميل ملف Excel الشامل</button>
+                <button class="download-btn" onclick="downloadTemplates()">📋 تحميل النماذج المنفصلة</button>
+            </div>
+        </div>
+
+        <!-- إدارة القضايا -->
+        <div id="cases" class="tab-content">
+            <div class="form-section">
+                <h3>➕ إضافة قضية جديدة</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>رقم القضية:</label>
+                        <input type="text" id="caseNumber" placeholder="مثال: 2024/123">
+                    </div>
+                    <div class="form-group">
+                        <label>اسم القضية:</label>
+                        <input type="text" id="caseName" placeholder="وصف مختصر للقضية">
+                    </div>
+                    <div class="form-group">
+                        <label>نوع القضية:</label>
+                        <select id="caseType">
+                            <option>جنائية</option>
+                            <option>مدنية</option>
+                            <option>تجارية</option>
+                            <option>أحوال شخصية</option>
+                            <option>إدارية</option>
+                            <option>عمالية</option>
+                            <option>عقارية</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>اسم الموكل:</label>
+                        <input type="text" id="clientName" placeholder="اسم الموكل">
+                    </div>
+                    <div class="form-group">
+                        <label>المحكمة:</label>
+                        <input type="text" id="court" placeholder="اسم المحكمة">
+                    </div>
+                    <div class="form-group">
+                        <label>حالة القضية:</label>
+                        <select id="caseStatus">
+                            <option>جديدة</option>
+                            <option>قيد النظر</option>
+                            <option>مؤجلة</option>
+                            <option>محكوم بها</option>
+                            <option>مغلقة</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>تاريخ بداية القضية:</label>
+                        <input type="date" id="caseStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label>أتعاب المحاماة:</label>
+                        <input type="number" id="caseFees" placeholder="المبلغ بالجنيه">
+                    </div>
+                    <div class="form-group">
+                        <label>ملاحظات:</label>
+                        <textarea id="caseNotes" rows="3" placeholder="ملاحظات إضافية"></textarea>
+                    </div>
+                </div>
+                <button class="btn" onclick="addCase()">➕ إضافة القضية</button>
+            </div>
+
+            <div class="table-container">
+                <h3>📋 قائمة القضايا</h3>
+                <table id="casesTable">
+                    <thead>
+                        <tr>
+                            <th>رقم القضية</th>
+                            <th>اسم القضية</th>
+                            <th>النوع</th>
+                            <th>الموكل</th>
+                            <th>المحكمة</th>
+                            <th>الحالة</th>
+                            <th>تاريخ البداية</th>
+                            <th>الأتعاب</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="casesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- إدارة الموكلين -->
+        <div id="clients" class="tab-content">
+            <div class="form-section">
+                <h3>➕ إضافة موكل جديد</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>الاسم الكامل:</label>
+                        <input type="text" id="clientFullName" placeholder="الاسم الرباعي">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الهاتف:</label>
+                        <input type="tel" id="clientPhone" placeholder="01XXXXXXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>البريد الإلكتروني:</label>
+                        <input type="email" id="clientEmail" placeholder="example@email.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>الرقم القومي:</label>
+                        <input type="text" id="clientId" placeholder="14 رقم">
+                    </div>
+                    <div class="form-group">
+                        <label>العنوان:</label>
+                        <textarea id="clientAddress" rows="2" placeholder="العنوان التفصيلي"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>نوع العميل:</label>
+                        <select id="clientType">
+                            <option>فرد</option>
+                            <option>شركة</option>
+                            <option>مؤسسة</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn" onclick="addClient()">➕ إضافة الموكل</button>
+            </div>
+
+            <div class="table-container">
+                <h3>👥 قائمة الموكلين</h3>
+                <table id="clientsTable">
+                    <thead>
+                        <tr>
+                            <th>الاسم</th>
+                            <th>الهاتف</th>
+                            <th>البريد الإلكتروني</th>
+                            <th>الرقم القومي</th>
+                            <th>النوع</th>
+                            <th>عدد القضايا</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- إدارة الجلسات -->
+        <div id="sessions" class="tab-content">
+            <div class="form-section">
+                <h3>➕ إضافة جلسة جديدة</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>رقم القضية:</label>
+                        <select id="sessionCaseNumber">
+                            <option value="">اختر القضية</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>تاريخ الجلسة:</label>
+                        <input type="date" id="sessionDate">
+                    </div>
+                    <div class="form-group">
+                        <label>وقت الجلسة:</label>
+                        <input type="time" id="sessionTime">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>المحكمة/القاعة:</label>
+                        <input type="text" id="sessionCourt" placeholder="اسم المحكمة والقاعة">
+                    </div>
+                    <div class="form-group">
+                        <label>نوع الجلسة:</label>
+                        <select id="sessionType">
+                            <option>جلسة عادية</option>
+                            <option>جلسة إثبات</option>
+                            <option>جلسة مرافعة</option>
+                            <option>جلسة حكم</option>
+                            <option>جلسة استئناف</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>حالة الجلسة:</label>
+                        <select id="sessionStatus">
+                            <option>مجدولة</option>
+                            <option>مؤجلة</option>
+                            <option>منعقدة</option>
+                            <option>ملغاة</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ملاحظات الجلسة:</label>
+                        <textarea id="sessionNotes" rows="3" placeholder="تفاصيل أو ملاحظات مهمة"></textarea>
+                    </div>
+                </div>
+                <button class="btn" onclick="addSession()">➕ إضافة الجلسة</button>
+            </div>
+
+            <div class="table-container">
+                <h3>⚖️ قائمة الجلسات</h3>
+                <table id="sessionsTable">
+                    <thead>
+                        <tr>
+                            <th>رقم القضية</th>
+                            <th>التاريخ</th>
+                            <th>الوقت</th>
+                            <th>المحكمة</th>
+                            <th>النوع</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sessionsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- إدارة المهام -->
+        <div id="tasks" class="tab-content">
+            <div class="form-section">
+                <h3>➕ إضافة مهمة إدارية</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>عنوان المهمة:</label>
+                        <input type="text" id="taskTitle" placeholder="وصف المهمة">
+                    </div>
+                    <div class="form-group">
+                        <label>نوع المهمة:</label>
+                        <select id="taskType">
+                            <option>متابعة قضية</option>
+                            <option>تحضير مستندات</option>
+                            <option>اتصال بالموكل</option>
+                            <option>زيارة محكمة</option>
+                            <option>استشارة قانونية</option>
+                            <option>مهمة إدارية</option>
+                            <option>أخرى</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>الأولوية:</label>
+                        <select id="taskPriority">
+                            <option>عادية</option>
+                            <option>مهمة</option>
+                            <option>عاجلة</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>تاريخ الاستحقاق:</label>
+                        <input type="date" id="taskDueDate">
+                    </div>
+                    <div class="form-group">
+                        <label>وقت التذكير:</label>
+                        <input type="datetime-local" id="taskReminder">
+                    </div>
+                    <div class="form-group">
+                        <label>الحالة:</label>
+                        <select id="taskStatus">
+                            <option>جديدة</option>
+                            <option>قيد التنفيذ</option>
+                            <option>مكتملة</option>
+                            <option>مؤجلة</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>تفاصيل المهمة:</label>
+                        <textarea id="taskDescription" rows="3" placeholder="وصف تفصيلي للمهمة"></textarea>
+                    </div>
+                </div>
+                <button class="btn" onclick="addTask()">➕ إضافة المهمة</button>
+            </div>
+
+            <div class="table-container">
+                <h3>📝 قائمة المهام</h3>
+                <table id="tasksTable">
+                    <thead>
+                        <tr>
+                            <th>العنوان</th>
+                            <th>النوع</th>
+                            <th>الأولوية</th>
+                            <th>تاريخ الاستحقاق</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasksTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- التقويم -->
+        <div id="calendar" class="tab-content">
+            <div class="form-section">
+                <h3>📅 تقويم الأعمال</h3>
+                <div id="calendarView">
+                    <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px;">
+                        <h4>عرض التقويم الشهري</h4>
+                        <p>يعرض جميع الجلسات والمهام المجدولة</p>
+                        <div id="monthlyCalendar"></div>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- Cases Section -->
-        <div id="cases" class="section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: #333;">إدارة القضايا</h2>
-                <button class="btn btn-primary" onclick="openModal('caseModal')">
-                    <i class="fas fa-plus"></i> إضافة قضية جديدة
-                </button>
-            </div>
-            <input type="text" class="search-bar" id="caseSearch" placeholder="البحث في القضايا..." onkeyup="searchCases()" />
-            <div id="casesList"></div>
-        </div>
-        <!-- Clients Section -->
-        <div id="clients" class="section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: #333;">إدارة الموكلين</h2>
-                <button class="btn btn-primary" onclick="openModal('clientModal')">
-                    <i class="fas fa-plus"></i> إضافة موكل جديد
-                </button>
-            </div>
-            <input type="text" class="search-bar" id="clientSearch" placeholder="البحث في الموكلين..." onkeyup="searchClients()" />
-            <div id="clientsList"></div>
-        </div>
-        <!-- Sessions Section -->
-        <div id="sessions" class="section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: #333;">إدارة الجلسات</h2>
-                <button class="btn btn-primary" onclick="openModal('sessionModal')">
-                    <i class="fas fa-plus"></i> إضافة جلسة جديدة
-                </button>
-            </div>
-            <input type="text" class="search-bar" id="sessionSearch" placeholder="البحث في الجلسات..." onkeyup="searchSessions()" />
-            <div id="sessionsList"></div>
-        </div>
-        <!-- Reports Section -->
-        <div id="reports" class="section" style="direction: rtl;">
-            <h2 style="margin-bottom: 20px; color: #333;">التقارير والإحصائيات</h2>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>نوع التقرير:</label>
-                    <select id="reportType">
-                        <option value="cases">تقرير القضايا</option>
-                        <option value="clients">تقرير الموكلين</option>
-                        <option value="sessions">تقرير الجلسات</option>
-                        <option value="monthly">التقرير الشهري</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>من تاريخ:</label>
-                    <input type="date" id="reportFromDate" />
-                </div>
-                <div class="form-group">
-                    <label>إلى تاريخ:</label>
-                    <input type="date" id="reportToDate" />
-                </div>
-            </div>
-            <div style="margin: 20px 0; display: flex; gap: 10px;">
-                <button class="btn btn-primary" onclick="generateReport()">
-                    <i class="fas fa-chart-line"></i> إنشاء التقرير
-                </button>
-                <button class="btn btn-success" onclick="printReport()">
-                    <i class="fas fa-print"></i> طباعة
-                </button>
-                <button class="btn btn-info" onclick="exportToPDF()">
-                    <i class="fas fa-file-pdf"></i> تصدير PDF
-                </button>
-            </div>
-            <div id="reportContent" class="print-content" style="direction: rtl;"></div>
-        </div>
     </div>
-</div>
 
-<!-- Modal Templates -->
+    <script>
+        // البيانات المحلية
+        let cases = [];
+        let clients = [];
+        let sessions = [];
+        let tasks = [];
 
-<!-- Case Modal -->
-<div id="caseModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('caseModal')">&times;</span>
-        <h3 style="margin-bottom: 20px;">إضافة/تعديل قضية</h3>
-        <form id="caseForm">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>رقم القضية:</label>
-                    <input type="text" id="caseNumber" required />
-                </div>
-                <div class="form-group">
-                    <label>عنوان القضية:</label>
-                    <input type="text" id="caseTitle" required />
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>الموكل:</label>
-                    <select id="caseClient" required>
-                        <option value="">اختر الموكل</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>المحكمة:</label>
-                    <select id="caseCourt" required>
-                        <option value="">اختر المحكمة</option>
-                        <option value="محكمة النقض">محكمة النقض</option>
-                        <option value="محكمة الاستئناف">محكمة الاستئناف</option>
-                        <option value="المحكمة الابتدائية">المحكمة الابتدائية</option>
-                        <option value="محكمة الجنح">محكمة الجنح</option>
-                        <option value="محكمة الجنايات">محكمة الجنايات</option>
-                        <option value="المحكمة الإدارية">المحكمة الإدارية</option>
-                        <option value="محكمة الأسرة">محكمة الأسرة</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>نوع القضية:</label>
-                    <select id="caseType" required>
-                        <option value="">اختر نوع القضية</option>
-                        <option value="مدني">مدني</option>
-                        <option value="جنائي">جنائي</option>
-                        <option value="تجاري">تجاري</option>
-                        <option value="عمالي">عمالي</option>
-                        <option value="إداري">إداري</option>
-                        <option value="أحوال شخصية">أحوال شخصية</option>
-                        <option value="عقاري">عقاري</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>الحالة:</label>
-                    <select id="caseStatus" required>
-                        <option value="نشطة">نشطة</option>
-                        <option value="معلقة">معلقة</option>
-                        <option value="مغلقة">مغلقة</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>تفاصيل القضية:</label>
-                <textarea id="caseDescription" rows="4"></textarea>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>تاريخ بدء القضية:</label>
-                    <input type="date" id="caseStartDate" required />
-                </div>
-                <div class="form-group">
-                    <label>الأتعاب المتفق عليها:</label>
-                    <input type="number" id="caseFees" placeholder="بالجنيه المصري" min="0" />
-                </div>
-            </div>
-            <div style="text-align: center; margin-top: 20px;">
-                <button type="submit" class="btn btn-primary">حفظ القضية</button>
-                <button type="button" class="btn btn-secondary" onclick="closeModal('caseModal')">إلغاء</button>
-            </div>
-        </form>
-    </div>
-</div>
+        // عرض التاريخ الحالي
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ar-EG');
 
-<!-- Client Modal -->
-<div id="clientModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('clientModal')">&times;</span>
-        <h3 style="margin-bottom: 20px;">إضافة/تعديل موكل</h3>
-        <form id="clientForm">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>اسم الموكل:</label>
-                    <input type="text" id="clientName" required />
-                </div>
-                <div class="form-group">
-                    <label>رقم الهاتف:</label>
-                    <input type="tel" id="clientPhone" required />
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>البريد الإلكتروني:</label>
-                    <input type="email" id="clientEmail" />
-                </div>
-                <div class="form-group">
-                    <label>الرقم القومي:</label>
-                    <input type="text" id="clientNationalId" required />
-                </div>
-            </div>
-            <div class="form-group">
-                <label>العنوان:</label>
-                <textarea id="clientAddress" rows="3"></textarea>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>المهنة:</label>
-                    <input type="text" id="clientProfession" />
-                </div>
-                <div class="form-group">
-                    <label>تاريخ الميلاد:</label>
-                    <input type="date" id="clientBirthDate" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label>ملاحظات:</label>
-                <textarea id="clientNotes" rows="3"></textarea>
-            </div>
-            <div style="text-align: center; margin-top: 20px;">
-                <button type="submit" class="btn btn-primary">حفظ الموكل</button>
-                <button type="button" class="btn btn-secondary" onclick="closeModal('clientModal')">إلغاء</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Session Modal -->
-<div id="sessionModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('sessionModal')">&times;</span>
-        <h3 style="margin-bottom: 20px;">إضافة/تعديل جلسة</h3>
-        <form id="sessionForm">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>القضية:</label>
-                    <select id="sessionCase" required>
-                        <option value="">اختر القضية</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>تاريخ الجلسة:</label>
-                    <input type="datetime-local" id="sessionDate" required />
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>المحكمة:</label>
-                    <input type="text" id="sessionCourt" required />
-                </div>
-                <div class="form-group">
-                    <label>رقم القاعة:</label>
-                    <input type="text" id="sessionRoom" />
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>نوع الجلسة:</label>
-                    <select id="sessionType" required>
-                        <option value="">اختر نوع الجلسة</option>
-                        <option value="أولى">أولى</option>
-                        <option value="تأجيل">تأجيل</option>
-                        <option value="مرافعة">مرافعة</option>
-                        <option value="حكم">حكم</option>
-                        <option value="استئناف">استئناف</option>
-                        <option value="تنفيذ">تنفيذ</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>الحالة:</label>
-                    <select id="sessionStatus">
-                        <option value="مجدولة">مجدولة</option>
-                        <option value="تمت">تمت</option>
-                        <option value="مؤجلة">مؤجلة</option>
-                        <option value="ملغية">ملغية</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>ملاحظات الجلسة:</label>
-                <textarea id="sessionNotes" rows="4"></textarea>
-            </div>
-            <div style="text-align: center; margin-top: 20px;">
-                <button type="submit" class="btn btn-primary">حفظ الجلسة</button>
-                <button type="button" class="btn btn-secondary" onclick="closeModal('sessionModal')">إلغاء</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    // بيانات تخزين مؤقتة
-    let cases = [];
-    let clients = [];
-    let sessions = [];
-    let currentEditId = null;
-    let currentEditType = null;
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadData();
-        updateDashboard();
-        displayCases();
-        displayClients();
-        displaySessions();
-        populateClientDropdowns();
-        populateCaseDropdowns();
-    });
-
-    function loadData() {
-        // تهيئة بيانات تجريبية
-        if (cases.length === 0) {
-            cases = [
-                {
-                    id: 1,
-                    number: "2024/123",
-                    title: "قضية مطالبة مالية",
-                    client: "أحمد محمد علي",
-                    court: "المحكمة الابتدائية",
-                    type: "مدني",
-                    status: "نشطة",
-                    description: "قضية مطالبة بمبلغ مالي",
-                    startDate: "2024-01-15",
-                    fees: 10000
-                }
-            ];
-            clients = [
-                {
-                    id: 1,
-                    name: "أحمد محمد علي",
-                    phone: "01234567890",
-                    email: "ahmed@example.com",
-                    nationalId: "12345678901234",
-                    address: "القاهرة، مصر الجديدة",
-                    profession: "مهندس",
-                    birthDate: "1985-05-20",
-                    notes: "موكل منتظم"
-                }
-            ];
-            sessions = [
-                {
-                    id: 1,
-                    caseId: 1,
-                    date: "2024-06-01T10:00",
-                    court: "المحكمة الابتدائية",
-                    room: "5",
-                    type: "أولى",
-                    status: "مجدولة",
-                    notes: "الجلسة الأولى للقضية"
-                }
-            ];
-        }
-    }
-
-    // التنقل بين الأقسام
-    function showSection(sectionId) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(sectionId).classList.add('active');
-        document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
-        [...document.querySelectorAll('.nav-tab')].find(tab => tab.textContent.includes(getTabName(sectionId))).classList.add('active');
-    }
-
-    function getTabName(id) {
-        switch(id) {
-            case 'dashboard': return 'لوحة التحكم';
-            case 'cases': return 'القضايا';
-            case 'clients': return 'الموكلين';
-            case 'sessions': return 'الجلسات';
-            case 'reports': return 'التقارير';
-            default: return '';
-        }
-    }
-
-    // عرض القضايا
-    function displayCases() {
-        const container = document.getElementById('casesList');
-        container.innerHTML = '';
-        if (cases.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#666;">لا توجد قضايا</p>';
-            return;
-        }
-        cases.forEach(c => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="card-title">${c.number} - ${c.title}</div>
-                    <div class="card-actions">
-                        <button class="btn btn-info" onclick="editCase(${c.id})" title="تعديل"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger" onclick="deleteCase(${c.id})" title="حذف"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </div>
-                <p><strong>الموكل:</strong> ${c.client}</p>
-                <p><strong>المحكمة:</strong> ${c.court}</p>
-                <p><strong>نوع القضية:</strong> ${c.type}</p>
-                <p><strong>الحالة:</strong> ${c.status}</p>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    // عرض الموكلين
-    function displayClients() {
-        const container = document.getElementById('clientsList');
-        container.innerHTML = '';
-        if (clients.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#666;">لا توجد موكلين</p>';
-            return;
-        }
-        clients.forEach(c => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="card-title">${c.name}</div>
-                    <div class="card-actions">
-                        <button class="btn btn-info" onclick="editClient(${c.id})" title="تعديل"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger" onclick="deleteClient(${c.id})" title="حذف"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </div>
-                <p><strong>الهاتف:</strong> ${c.phone}</p>
-                <p><strong>البريد الإلكتروني:</strong> ${c.email || '-'}</p>
-                <p><strong>الرقم القومي:</strong> ${c.nationalId}</p>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    // عرض الجلسات
-    function displaySessions() {
-        const container = document.getElementById('sessionsList');
-        container.innerHTML = '';
-        if (sessions.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#666;">لا توجد جلسات</p>';
-            return;
-        }
-        sessions.forEach(s => {
-            const caseObj = cases.find(c => c.id === s.caseId);
-            const caseTitle = caseObj ? `${caseObj.number} - ${caseObj.title}` : 'قضية غير معروفة';
-            const sessionDate = new Date(s.date);
-            const formattedDate = sessionDate.toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
-
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="card-title">${formattedDate} - ${caseTitle}</div>
-                    <div class="card-actions">
-                        <button class="btn btn-info" onclick="editSession(${s.id})" title="تعديل"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger" onclick="deleteSession(${s.id})" title="حذف"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </div>
-                <p><strong>المحكمة:</strong> ${s.court}</p>
-                <p><strong>رقم القاعة:</strong> ${s.room || '-'}</p>
-                <p><strong>نوع الجلسة:</strong> ${s.type}</p>
-                <p><strong>الحالة:</strong> ${s.status}</p>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    // تعبئة قائمة الموكلين في نموذج القضايا
-    function populateClientDropdowns() {
-        const select = document.getElementById('caseClient');
-        if (!select) return;
-        select.innerHTML = '<option value="">اختر الموكل</option>';
-        clients.forEach(c => {
-            const option = document.createElement('option');
-            option.value = c.name;
-            option.textContent = c.name;
-            select.appendChild(option);
-        });
-    }
-
-    // تعبئة قائمة القضايا في نموذج الجلسات
-    function populateCaseDropdowns() {
-        const select = document.getElementById('sessionCase');
-        if (!select) return;
-        select.innerHTML = '<option value="">اختر القضية</option>';
-        cases.forEach(c => {
-            const option = document.createElement('option');
-            option.value = c.id;
-            option.textContent = `${c.number} - ${c.title}`;
-            select.appendChild(option);
-        });
-    }
-
-    // فتح النافذة المنبثقة
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) modal.style.display = 'block';
-    }
-
-    // إغلاق النافذة المنبثقة
-    function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) modal.style.display = 'none';
-        resetForm(modalId);
-        currentEditId = null;
-        currentEditType = null;
-    }
-
-    // إعادة تعيين نموذج داخل النافذة
-    function resetForm(modalId) {
-        let formId = '';
-        switch(modalId) {
-            case 'caseModal': formId = 'caseForm'; break;
-            case 'clientModal': formId = 'clientForm'; break;
-            case 'sessionModal': formId = 'sessionForm'; break;
-        }
-        if (formId) {
-            const form = document.getElementById(formId);
-            if (form) form.reset();
-        }
-    }
-
-    // حفظ/تعديل قضية
-    document.getElementById('caseForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const number = document.getElementById('caseNumber').value.trim();
-        const title = document.getElementById('caseTitle').value.trim();
-        const client = document.getElementById('caseClient').value;
-        const court = document.getElementById('caseCourt').value;
-        const type = document.getElementById('caseType').value;
-        const status = document.getElementById('caseStatus').value;
-        const description = document.getElementById('caseDescription').value.trim();
-        const startDate = document.getElementById('caseStartDate').value;
-        const feesStr = document.getElementById('caseFees').value;
-        const fees = feesStr ? parseFloat(feesStr) : 0;
-
-        if (!number || !title || !client || !court || !type || !status || !startDate) {
-            alert('الرجاء ملء الحقول المطلوبة');
-            return;
+        // تحديث الإحصائيات
+        function updateStats() {
+            document.getElementById('totalCases').textContent = cases.length;
+            document.getElementById('totalClients').textContent = clients.length;
+            
+            const today = new Date().toDateString();
+            const upcomingSessions = sessions.filter(session => 
+                new Date(session.date).toDateString() >= today
+            ).length;
+            document.getElementById('upcomingSessions').textContent = upcomingSessions;
+            
+            const pendingTasks = tasks.filter(task => 
+                task.status !== 'مكتملة'
+            ).length;
+            document.getElementById('pendingTasks').textContent = pendingTasks;
         }
 
-        if (currentEditType === 'case' && currentEditId !== null) {
-            const idx = cases.findIndex(c => c.id === currentEditId);
-            if (idx !== -1) {
-                cases[idx] = { ...cases[idx], number, title, client, court, type, status, description, startDate, fees };
-            }
-        } else {
-            const newId = cases.length > 0 ? Math.max(...cases.map(c => c.id)) + 1 : 1;
-            cases.push({ id: newId, number, title, client, court, type, status, description, startDate, fees });
-        }
-        displayCases();
-        updateDashboard();
-        populateCaseDropdowns();
-        closeModal('caseModal');
-    });
-
-    // تعديل قضية
-    function editCase(id) {
-        const c = cases.find(c => c.id === id);
-        if (!c) return alert('القضية غير موجودة');
-        currentEditId = id;
-        currentEditType = 'case';
-        document.getElementById('caseNumber').value = c.number;
-        document.getElementById('caseTitle').value = c.title;
-        document.getElementById('caseClient').value = c.client;
-        document.getElementById('caseCourt').value = c.court;
-        document.getElementById('caseType').value = c.type;
-        document.getElementById('caseStatus').value = c.status;
-        document.getElementById('caseDescription').value = c.description;
-        document.getElementById('caseStartDate').value = c.startDate;
-        document.getElementById('caseFees').value = c.fees || '';
-        openModal('caseModal');
-    }
-
-    // حذف قضية
-    function deleteCase(id) {
-        if (!confirm('هل أنت متأكد من حذف هذه القضية؟')) return;
-        cases = cases.filter(c => c.id !== id);
-        sessions = sessions.filter(s => s.caseId !== id);
-        displayCases();
-        displaySessions();
-        updateDashboard();
-        populateCaseDropdowns();
-    }
-
-    // حفظ/تعديل موكل
-    document.getElementById('clientForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const name = document.getElementById('clientName').value.trim();
-        const phone = document.getElementById('clientPhone').value.trim();
-        const email = document.getElementById('clientEmail').value.trim();
-        const nationalId = document.getElementById('clientNationalId').value.trim();
-        const address = document.getElementById('clientAddress').value.trim();
-        const profession = document.getElementById('clientProfession').value.trim();
-        const birthDate = document.getElementById('clientBirthDate').value;
-        const notes = document.getElementById('clientNotes').value.trim();
-
-        if (!name || !phone || !nationalId) {
-            alert('الرجاء ملء الحقول المطلوبة');
-            return;
-        }
-
-        if (currentEditType === 'client' && currentEditId !== null) {
-            const idx = clients.findIndex(c => c.id === currentEditId);
-            if (idx !== -1) {
-                clients[idx] = { ...clients[idx], name, phone, email, nationalId, address, profession, birthDate, notes };
-            }
-        } else {
-            const newId = clients.length > 0 ? Math.max(...clients.map(c => c.id)) + 1 : 1;
-            clients.push({ id: newId, name, phone, email, nationalId, address, profession, birthDate, notes });
-        }
-        displayClients();
-        updateDashboard();
-        populateClientDropdowns();
-        closeModal('clientModal');
-    });
-
-    // تعديل موكل
-    function editClient(id) {
-        const c = clients.find(c => c.id === id);
-        if (!c) return alert('الموكل غير موجود');
-        currentEditId = id;
-        currentEditType = 'client';
-        document.getElementById('clientName').value = c.name;
-        document.getElementById('clientPhone').value = c.phone;
-        document.getElementById('clientEmail').value = c.email || '';
-        document.getElementById('clientNationalId').value = c.nationalId;
-        document.getElementById('clientAddress').value = c.address;
-        document.getElementById('clientProfession').value = c.profession;
-        document.getElementById('clientBirthDate').value = c.birthDate || '';
-        document.getElementById('clientNotes').value = c.notes || '';
-        openModal('clientModal');
-    }
-
-    // حذف موكل
-    function deleteClient(id) {
-        if (!confirm('هل أنت متأكد من حذف هذا الموكل؟')) return;
-        clients = clients.filter(c => c.id !== id);
-        cases = cases.filter(c => c.client !== clients.find(cl => cl.id === id)?.name);
-        displayClients();
-        displayCases();
-        updateDashboard();
-        populateClientDropdowns();
-    }
-
-    // حفظ/تعديل جلسة
-    document.getElementById('sessionForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const caseIdStr = document.getElementById('sessionCase').value;
-        const caseId = parseInt(caseIdStr);
-        const date = document.getElementById('sessionDate').value;
-        const court = document.getElementById('sessionCourt').value.trim();
-        const room = document.getElementById('sessionRoom').value.trim();
-        const type = document.getElementById('sessionType').value;
-        const status = document.getElementById('sessionStatus').value;
-        const notes = document.getElementById('sessionNotes').value.trim();
-
-        if (!caseIdStr || !date || !court || !type) {
-            alert('الرجاء ملء الحقول المطلوبة');
-            return;
-        }
-
-        if (currentEditType === 'session' && currentEditId !== null) {
-            const idx = sessions.findIndex(s => s.id === currentEditId);
-            if (idx !== -1) {
-                sessions[idx] = { ...sessions[idx], caseId, date, court, room, type, status, notes };
-            }
-        } else {
-            const newId = sessions.length > 0 ? Math.max(...sessions.map(s => s.id)) + 1 : 1;
-            sessions.push({ id: newId, caseId, date, court, room, type, status, notes });
-        }
-        displaySessions();
-        updateDashboard();
-        closeModal('sessionModal');
-    });
-
-    // تعديل جلسة
-    function editSession(id) {
-        const s = sessions.find(s => s.id === id);
-        if (!s) return alert('الجلسة غير موجودة');
-        currentEditId = id;
-        currentEditType = 'session';
-        document.getElementById('sessionCase').value = s.caseId;
-        document.getElementById('sessionDate').value = s.date;
-        document.getElementById('sessionCourt').value = s.court;
-        document.getElementById('sessionRoom').value = s.room || '';
-        document.getElementById('sessionType').value = s.type;
-        document.getElementById('sessionStatus').value = s.status;
-        document.getElementById('sessionNotes').value = s.notes || '';
-        openModal('sessionModal');
-    }
-
-    // حذف جلسة
-    function deleteSession(id) {
-        if (!confirm('هل أنت متأكد من حذف هذه الجلسة؟')) return;
-        sessions = sessions.filter(s => s.id !== id);
-        displaySessions();
-        updateDashboard();
-    }
-
-    // البحث في القضايا
-    function searchCases() {
-        const query = document.getElementById('caseSearch').value.trim().toLowerCase();
-        const container = document.getElementById('casesList');
-        container.innerHTML = '';
-        let filtered = cases.filter(c =>
-            c.number.toLowerCase().includes(query) ||
-            c.title.toLowerCase().includes(query) ||
-            c.client.toLowerCase().includes(query) ||
-            c.court.toLowerCase().includes(query) ||
-            c.type.toLowerCase().includes(query) ||
-            c.status.toLowerCase().includes(query)
-        );
-        if (filtered.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#666;">لا توجد نتائج مطابقة</p>';
-            return;
-        }
-        filtered.forEach(c => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="card-title">${c.number} - ${c.title}</div>
-                    <div class="card-actions">
-                        <button class="btn btn-info" onclick="editCase(${c.id})" title="تعديل"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger" onclick="deleteCase(${c.id})" title="حذف"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </div>
-                <p><strong>الموكل:</strong> ${c.client}</p>
-                <p><strong>المحكمة:</strong> ${c.court}</p>
-                <p><strong>نوع القضية:</strong> ${c.type}</p>
-                <p><strong>الحالة:</strong> ${c.status}</p>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    // البحث في الموكلين
-    function searchClients() {
-        const query = document.getElementById('clientSearch').value.trim().toLowerCase();
-        const container = document.getElementById('clientsList');
-        container.innerHTML = '';
-        let filtered = clients.filter(c =>
-            c.name.toLowerCase().includes(query) ||
-            c.phone.toLowerCase().includes(query) ||
-            (c.email && c.email.toLowerCase().includes(query)) ||
-            c.nationalId.toLowerCase().includes(query) ||
-            (c.profession && c.profession.toLowerCase().includes(query))
-        );
-        if (filtered.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#666;">لا توجد نتائج مطابقة</p>';
-            return;
-        }
-        filtered.forEach(c => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="card-title">${c.name}</div>
-                    <div class="card-actions">
-                        <button class="btn btn-info" onclick="editClient(${c.id})" title="تعديل"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger" onclick="deleteClient(${c.id})" title="حذف"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </div>
-                <p><strong>الهاتف:</strong> ${c.phone}</p>
-                <p><strong>البريد الإلكتروني:</strong> ${c.email || '-'}</p>
-                <p><strong>الرقم القومي:</strong> ${c.nationalId}</p>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    // البحث في الجلسات
-    function searchSessions() {
-        const query = document.getElementById('sessionSearch').value.trim().toLowerCase();
-        const container = document.getElementById('sessionsList');
-        container.innerHTML = '';
-        let filtered = sessions.filter(s => {
-            const caseObj = cases.find(c => c.id === s.caseId);
-            const caseStr = caseObj ? `${caseObj.number} ${caseObj.title}` : '';
-            return (
-                caseStr.toLowerCase().includes(query) ||
-                s.court.toLowerCase().includes(query) ||
-                (s.room && s.room.toLowerCase().includes(query)) ||
-                s.type.toLowerCase().includes(query) ||
-                s.status.toLowerCase().includes(query) ||
-                (s.notes && s.notes.toLowerCase().includes(query))
+        // عرض التنبيهات اليومية
+        function showTodayAlerts() {
+            const today = new Date().toDateString();
+            const alerts = [];
+            
+            // جلسات اليوم
+            const todaySessions = sessions.filter(session => 
+                new Date(session.date).toDateString() === today
             );
-        });
-        if (filtered.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#666;">لا توجد نتائج مطابقة</p>';
-            return;
-        }
-        filtered.forEach(s => {
-            const caseObj = cases.find(c => c.id === s.caseId);
-            const caseTitle = caseObj ? `${caseObj.number} - ${caseObj.title}` : 'قضية غير معروفة';
-            const sessionDate = new Date(s.date);
-            const formattedDate = sessionDate.toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="card-title">${formattedDate} - ${caseTitle}</div>
-                    <div class="card-actions">
-                        <button class="btn btn-info" onclick="editSession(${s.id})" title="تعديل"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger" onclick="deleteSession(${s.id})" title="حذف"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </div>
-                <p><strong>المحكمة:</strong> ${s.court}</p>
-                <p><strong>رقم القاعة:</strong> ${s.room || '-'}</p>
-                <p><strong>نوع الجلسة:</strong> ${s.type}</p>
-                <p><strong>الحالة:</strong> ${s.status}</p>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    // تحديث لوحة التحكم
-    function updateDashboard() {
-        document.getElementById('totalCases').textContent = cases.length.toString();
-        document.getElementById('activeCases').textContent = cases.filter(c => c.status === 'نشطة').length.toString();
-        document.getElementById('totalClients').textContent = clients.length.toString();
-        const now = new Date();
-        const upcoming = sessions.filter(s => new Date(s.date) >= now && s.status === 'مجدولة');
-        document.getElementById('upcomingSessions').textContent = upcoming.length.toString();
-
-        const todaySessionsContainer = document.getElementById('todaySessions');
-        todaySessionsContainer.innerHTML = '';
-        const todayStr = now.toISOString().split('T')[0];
-        const todaySessions = upcoming.filter(s => s.date.startsWith(todayStr));
-        if (todaySessions.length === 0) {
-            todaySessionsContainer.innerHTML = `<p style="text-align: center; color: #666; padding: 20px;">لا توجد جلسات مجدولة لليوم</p>`;
-        } else {
-            todaySessions.forEach(s => {
-                const caseObj = cases.find(c => c.id === s.caseId);
-                const caseTitle = caseObj ? `${caseObj.number} - ${caseObj.title}` : 'قضية غير معروفة';
-                const timeString = new Date(s.date).toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
-                const div = document.createElement('div');
-                div.className = 'session-item';
-                div.textContent = `${timeString} - ${caseTitle} - ${s.court}`;
-                todaySessionsContainer.appendChild(div);
+            
+            todaySessions.forEach(session => {
+                alerts.push(`⚖️ جلسة قضية ${session.caseNumber} في ${session.time} بمحكمة ${session.court}`);
             });
-        }
-    }
-
-    // توليد تقرير (مبسط)
-    function generateReport() {
-        const type = document.getElementById('reportType').value;
-        const fromDate = document.getElementById('reportFromDate').value;
-        const toDate = document.getElementById('reportToDate').value;
-        const contentDiv = document.getElementById('reportContent');
-        contentDiv.innerHTML = '';
-
-        let reportData = [];
-        let title = '';
-
-        // تحويل التواريخ إلى كائنات
-        const from = fromDate ? new Date(fromDate) : null;
-        const to = toDate ? new Date(toDate + 'T23:59:59') : null; // نهاية اليوم
-
-        function isInRange(dateStr) {
-            if (!dateStr) return true; 
-            const d = new Date(dateStr);
-            if (from && d < from) return false;
-            if (to && d > to) return false;
-            return true;
-        }
-
-        switch (type) {
-            case 'cases':
-                title = 'تقرير القضايا';
-                reportData = cases.filter(c => isInRange(c.startDate));
-                break;
-            case 'clients':
-                title = 'تقرير الموكلين';
-                reportData = clients;
-                break;
-            case 'sessions':
-                title = 'تقرير الجلسات';
-                reportData = sessions.filter(s => isInRange(s.date));
-                break;
-            case 'monthly':
-                title = 'التقرير الشهري (عدد القضايا والعملاء والجلسات في الفترة)';
-                // هنا تقرير ملخص شهري
-                break;
-        }
-
-        let html = `<h3>${title}</h3><table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 14px;">`;
-
-        if (type === 'cases') {
-            html += `<tr><th>رقم القضية</th><th>عنوان القضية</th><th>الموكل</th><th>المحكمة</th><th>نوع القضية</th><th>الحالة</th><th>تاريخ البدء</th></tr>`;
-            reportData.forEach(c => {
-                html += `<tr>
-                    <td>${c.number}</td>
-                    <td>${c.title}</td>
-                    <td>${c.client}</td>
-                    <td>${c.court}</td>
-                    <td>${c.type}</td>
-                    <td>${c.status}</td>
-                    <td>${c.startDate}</td>
-                </tr>`;
+            
+            // مهام اليوم
+            const todayTasks = tasks.filter(task => 
+                new Date(task.dueDate).toDateString() === today && task.status !== 'مكتملة'
+            );
+            
+            todayTasks.forEach(task => {
+                alerts.push(`📋 مهمة: ${task.title} - ${task.priority === 'عاجلة' ? '🔴' : task.priority === 'مهمة' ? '🟡' : '🟢'}`);
             });
-        } else if (type === 'clients') {
-            html += `<tr><th>الاسم</th><th>الهاتف</th><th>البريد الإلكتروني</th><th>الرقم القومي</th></tr>`;
-            reportData.forEach(c => {
-                html += `<tr>
-                    <td>${c.name}</td>
-                    <td>${c.phone}</td>
-                    <td>${c.email || '-'}</td>
-                    <td>${c.nationalId}</td>
-                </tr>`;
-            });
-        } else if (type === 'sessions') {
-            html += `<tr><th>تاريخ الجلسة</th><th>القضية</th><th>المحكمة</th><th>نوع الجلسة</th><th>الحالة</th></tr>`;
-            reportData.forEach(s => {
-                const caseObj = cases.find(c => c.id === s.caseId);
-                const caseTitle = caseObj ? `${caseObj.number} - ${caseObj.title}` : 'غير معروف';
-                const dateFormatted = (new Date(s.date)).toLocaleString('ar-EG', {dateStyle: 'short', timeStyle: 'short'});
-                html += `<tr>
-                    <td>${dateFormatted}</td>
-                    <td>${caseTitle}</td>
-                    <td>${s.court}</td>
-                    <td>${s.type}</td>
-                    <td>${s.status}</td>
-                </tr>`;
-            });
-        } else if (type === 'monthly') {
-            const casesCount = cases.filter(c => isInRange(c.startDate)).length;
-            const clientsCount = clients.length;
-            const sessionsCount = sessions.filter(s => isInRange(s.date)).length;
-            html += `<tr><th>نوع البيانات</th><th>العدد</th></tr>`;
-            html += `<tr><td>القضايا الجديدة</td><td>${casesCount}</td></tr>`;
-            html += `<tr><td>إجمالي الموكلين</td><td>${clientsCount}</td></tr>`;
-            html += `<tr><td>الجلسات المجدولة</td><td>${sessionsCount}</td></tr>`;
-        }
-        html += '</table>';
-        contentDiv.innerHTML = html;
-    }
-
-    // طباعة التقرير
-    function printReport() {
-        const content = document.getElementById('reportContent').innerHTML;
-        if (!content) {
-            alert('لا يوجد تقرير للطباعة');
-            return;
-        }
-        const originalContent = document.body.innerHTML;
-        document.body.innerHTML = content;
-        window.print();
-        document.body.innerHTML = originalContent;
-        location.reload();
-    }
-
-    // تصدير التقرير إلى PDF (مبسط جداً)
-    function exportToPDF() {
-        alert('ميزة تصدير PDF سيجري تطويرها لاحقاً.');
-    }
-
-    // إغلاق المودال عند الضغط خارج المحتوى
-    window.onclick = function(event) {
-        ['caseModal','clientModal','sessionModal'].forEach(id => {
-            const modal = document.getElementById(id);
-            if (event.target === modal) {
-                closeModal(id);
+            
+            const alertsList = document.getElementById('alertsList');
+            if (alerts.length === 0) {
+                alertsList.innerHTML = '<p>✅ لا توجد مهام أو جلسات مجدولة لليوم</p>';
+            } else {
+                alertsList.innerHTML = alerts.map(alert => `<div class="alert alert-warning">${alert}</div>`).join('');
             }
-        });
-    }
-</script>
+        }
+
+        // التنقل بين الصفحات
+        function showTab(tabName) {
+            // إخفاء جميع المحتويات
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // إظهار المحتوى المطلوب
+            document.getElementById(tabName).classList.add('active');
+            
+            // تحديث أزرار التنقل
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // إضافة قضية جديدة
+        function addCase() {
+            const caseData = {
+                id: Date.now(),
+                number: document.getElementById('caseNumber').value,
+                name: document.getElementById('caseName').value,
+                type: document.getElementById('caseType').value,
+                client: document.getElementById('clientName').value,
+                court: document.getElementById('court').value,
+                status: document.getElementById('caseStatus').value,
+                startDate: document.getElementById('caseStartDate').value,
+                fees: document.getElementById('caseFees').value,
+                notes: document.getElementById('caseNotes').value
+            };
+            
+            cases.push(caseData);
+            updateCasesTable();
+            updateSessionCaseOptions();
+            updateStats();
+            clearCaseForm();
+            showAlert('تم إضافة القضية بنجاح', 'success');
+        }
+
+        // مسح نموذج القضية
+        function clearCaseForm() {
+            document.getElementById('caseNumber').value = '';
+            document.getElementById('caseName').value = '';
+            document.getElementById('clientName').value = '';
+            document.getElementById('court').value = '';
+            document.getElementById('caseStartDate').value = '';
+            document.getElementById('caseFees').value = '';
+            document.getElementById('caseNotes').value = '';
+        }
+
+        // تحديث جدول القضايا
+        function updateCasesTable() {
+            const tbody = document.getElementById('casesTableBody');
+            tbody.innerHTML = '';
+            
+            cases.forEach(caseItem => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${caseItem.number}</td>
+                    <td>${caseItem.name}</td>
+                    <td>${caseItem.type}</td>
+                    <td>${caseItem.client}</td>
+                    <td>${caseItem.court}</td>
+                    <td><span class="badge ${getStatusBadgeClass(caseItem.status)}">${caseItem.status}</span></td>
+                    <td>${caseItem.startDate}</td>
+                    <td>${caseItem.fees ? caseItem.fees + ' جنيه' : '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="editCase(${caseItem.id})">تعديل</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCase(${caseItem.id})">حذف</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // إضافة موكل جديد
+        function addClient() {
+            const clientData = {
+                id: Date.now(),
+                name: document.getElementById('clientFullName').value,
+                phone: document.getElementById('clientPhone').value,
+                email: document.getElementById('clientEmail').value,
+                idNumber: document.getElementById('clientId').value,
+                address: document.getElementById('clientAddress').value,
+                type: document.getElementById('clientType').value
+            };
+            
+            clients.push(clientData);
+            updateClientsTable();
+            updateStats();
+            clearClientForm();
+            showAlert('تم إضافة الموكل بنجاح', 'success');
+        }
+
+        // مسح نموذج الموكل
+        function clearClientForm() {
+            document.getElementById('clientFullName').value = '';
+            document.getElementById('clientPhone').value = '';
+            document.getElementById('clientEmail').value = '';
+            document.getElementById('clientId').value = '';
+            document.getElementById('clientAddress').value = '';
+        }
+
+        // تحديث جدول الموكلين
+        function updateClientsTable() {
+            const tbody = document.getElementById('clientsTableBody');
+            tbody.innerHTML = '';
+            
+            clients.forEach(client => {
+                const clientCases = cases.filter(c => c.client === client.name).length;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${client.name}</td>
+                    <td>${client.phone}</td>
+                    <td>${client.email || '-'}</td>
+                    <td>${client.idNumber}</td>
+                    <td>${client.type}</td>
+                    <td>${clientCases}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="editClient(${client.id})">تعديل</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteClient(${client.id})">حذف</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // إضافة جلسة جديدة
+        function addSession() {
+            const sessionData = {
+                id: Date.now(),
+                caseNumber: document.getElementById('sessionCaseNumber').value,
+                date: document.getElementById('sessionDate').value,
+                time: document.getElementById('sessionTime').value,
+                court: document.getElementById('sessionCourt').value,
+                type: document.getElementById('sessionType').value,
+                status: document.getElementById('sessionStatus').value,
+                notes: document.getElementById('sessionNotes').value
+            };
+            
+            sessions.push(sessionData);
+            updateSessionsTable();
+            updateStats();
+            clearSessionForm();
+            showAlert('تم إضافة الجلسة بنجاح', 'success');
+        }
+
+        // مسح نموذج الجلسة
+        function clearSessionForm() {
+            document.getElementById('sessionDate').value = '';
+            document.getElementById('sessionTime').value = '';
+            document.getElementById('sessionCourt').value = '';
+            document.getElementById('sessionNotes').value = '';
+        }
+
+        // تحديث جدول الجلسات
+        function updateSessionsTable() {
+            const tbody = document.getElementById('sessionsTableBody');
+            tbody.innerHTML = '';
+            
+            sessions.forEach(session => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${session.caseNumber}</td>
+                    <td>${session.date}</td>
+                    <td>${session.time}</td>
+                    <td>${session.court}</td>
+                    <td>${session.type}</td>
+                    <td><span class="badge ${getStatusBadgeClass(session.status)}">${session.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="editSession(${session.id})">تعديل</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteSession(${session.id})">حذف</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // إضافة مهمة جديدة
+        function addTask() {
+            const taskData = {
+                id: Date.now(),
+                title: document.getElementById('taskTitle').value,
+                type: document.getElementById('taskType').value,
+                priority: document.getElementById('taskPriority').value,
+                dueDate: document.getElementById('taskDueDate').value,
+                reminder: document.getElementById('taskReminder').value,
+                status: document.getElementById('taskStatus').value,
+                description: document.getElementById('taskDescription').value
+            };
+            
+            tasks.push(taskData);
+            updateTasksTable();
+            updateStats();
+            clearTaskForm();
+            showAlert('تم إضافة المهمة بنجاح', 'success');
+        }
+
+        // مسح نموذج المهمة
+        function clearTaskForm() {
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDueDate').value = '';
+            document.getElementById('taskReminder').value = '';
+            document.getElementById('taskDescription').value = '';
+        }
+
+        // تحديث جدول المهام
+        function updateTasksTable() {
+            const tbody = document.getElementById('tasksTableBody');
+            tbody.innerHTML = '';
+            
+            tasks.forEach(task => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${task.title}</td>
+                    <td>${task.type}</td>
+                    <td><span class="priority-badge ${getPriorityClass(task.priority)}">${task.priority}</span></td>
+                    <td>${task.dueDate}</td>
+                    <td><span class="badge ${getStatusBadgeClass(task.status)}">${task.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="editTask(${task.id})">تعديل</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})">حذف</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // تحديث خيارات القضايا في الجلسات
+        function updateSessionCaseOptions() {
+            const select = document.getElementById('sessionCaseNumber');
+            select.innerHTML = '<option value="">اختر القضية</option>';
+            
+            cases.forEach(caseItem => {
+                const option = document.createElement('option');
+                option.value = caseItem.number;
+                option.textContent = `${caseItem.number} - ${caseItem.name}`;
+                select.appendChild(option);
+            });
+        }
+
+        // دوال مساعدة للتصميم
+        function getStatusBadgeClass(status) {
+            const statusClasses = {
+                'جديدة': 'badge-primary',
+                'قيد النظر': 'badge-info',
+                'مؤجلة': 'badge-warning',
+                'محكوم بها': 'badge-success',
+                'مغلقة': 'badge-secondary',
+                'مجدولة': 'badge-primary',
+                'منعقدة': 'badge-success',
+                'ملغاة': 'badge-danger',
+                'قيد التنفيذ': 'badge-info',
+                'مكتملة': 'badge-success'
+            };
+            return statusClasses[status] || 'badge-secondary';
+        }
+
+        function getPriorityClass(priority) {
+            const priorityClasses = {
+                'عادية': 'priority-normal',
+                'مهمة': 'priority-important',
+                'عاجلة': 'priority-urgent'
+            };
+            return priorityClasses[priority] || 'priority-normal';
+        }
+
+        // عرض التنبيهات
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        // دوال الحذف
+        function deleteCase(id) {
+            if (confirm('هل أنت متأكد من حذف هذه القضية؟')) {
+                cases = cases.filter(c => c.id !== id);
+                updateCasesTable();
+                updateStats();
+                showAlert('تم حذف القضية بنجاح', 'success');
+            }
+        }
+
+        function deleteClient(id) {
+            if (confirm('هل أنت متأكد من حذف هذا الموكل؟')) {
+                clients = clients.filter(c => c.id !== id);
+                updateClientsTable();
+                updateStats();
+                showAlert('تم حذف الموكل بنجاح', 'success');
+            }
+        }
+
+        function deleteSession(id) {
+            if (confirm('هل أنت متأكد من حذف هذه الجلسة؟')) {
+                sessions = sessions.filter(s => s.id !== id);
+                updateSessionsTable();
+                updateStats();
+                showAlert('تم حذف الجلسة بنجاح', 'success');
+            }
+        }
+
+        function deleteTask(id) {
+            if (confirm('هل أنت متأكد من حذف هذه المهمة؟')) {
+                tasks = tasks.filter(t => t.id !== id);
+                updateTasksTable();
+                updateStats();
+                showAlert('تم حذف المهمة بنجاح', 'success');
+            }
+        }
+
+        // تحميل ملف Excel
+        function downloadExcel() {
+            const workbook = createExcelWorkbook();
+            const filename = `مكتب_المحاماة_${new Date().toISOString().split('T')[0]}.xlsx`;
+            
+            // محاكاة تحميل الملف
+            showAlert('جاري إنشاء ملف Excel... سيتم التحميل قريباً', 'info');
+            
+            setTimeout(() => {
+                const csvContent = createCSVContent();
+                downloadCSV(csvContent, filename.replace('.xlsx', '.csv'));
+            }, 1000);
+        }
+
+        // إنشاء محتوى CSV
+        function createCSVContent() {
+            let csvContent = "البيانات الخاصة بمكتب المحاماة\n\n";
+            
+            // قسم القضايا
+            csvContent += "القضايا:\n";
+            csvContent += "رقم القضية,اسم القضية,النوع,الموكل,المحكمة,الحالة,تاريخ البداية,الأتعاب,الملاحظات\n";
+            cases.forEach(c => {
+                csvContent += `${c.number},${c.name},${c.type},${c.client},${c.court},${c.status},${c.startDate},${c.fees},${c.notes}\n`;
+            });
+            
+            csvContent += "\n";
+            
+            // قسم الموكلين
+            csvContent += "الموكلين:\n";
+            csvContent += "الاسم,الهاتف,البريد الإلكتروني,الرقم القومي,العنوان,النوع\n";
+            clients.forEach(c => {
+                csvContent += `${c.name},${c.phone},${c.email},${c.idNumber},${c.address},${c.type}\n`;
+            });
+            
+            csvContent += "\n";
+            
+            // قسم الجلسات
+            csvContent += "الجلسات:\n";
+            csvContent += "رقم القضية,التاريخ,الوقت,المحكمة,النوع,الحالة,الملاحظات\n";
+            sessions.forEach(s => {
+                csvContent += `${s.caseNumber},${s.date},${s.time},${s.court},${s.type},${s.status},${s.notes}\n`;
+            });
+            
+            csvContent += "\n";
+            
+            // قسم المهام
+            csvContent += "المهام:\n";
+            csvContent += "العنوان,النوع,الأولوية,تاريخ الاستحقاق,الحالة,الوصف\n";
+            tasks.forEach(t => {
+                csvContent += `${t.title},${t.type},${t.priority},${t.dueDate},${t.status},${t.description}\n`;
+            });
+            
+            return csvContent;
+        }
+
+        // تحميل ملف CSV
+        function downloadCSV(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showAlert('تم تحميل الملف بنجاح', 'success');
+            }
+        }
+
+        // تحميل النماذج المنفصلة
+        function downloadTemplates() {
+            const templates = [
+                { name: 'نموذج_القضايا.csv', content: 'رقم القضية,اسم القضية,النوع,الموكل,المحكمة,الحالة,تاريخ البداية,الأتعاب,الملاحظات\n' },
+                { name: 'نموذج_الموكلين.csv', content: 'الاسم,الهاتف,البريد الإلكتروني,الرقم القومي,العنوان,النوع\n' },
+                { name: 'نموذج_الجلسات.csv', content: 'رقم القضية,التاريخ,الوقت,المحكمة,النوع,الحالة,الملاحظات\n' },
+                { name: 'نموذج_المهام.csv', content: 'العنوان,النوع,الأولوية,تاريخ الاستحقاق,الحالة,الوصف\n' }
+            ];
+            
+            templates.forEach(template => {
+                setTimeout(() => {
+                    downloadCSV(template.content, template.name);
+                }, 500);
+            });
+            
+            showAlert('جاري تحميل النماذج...', 'info');
+        }
+
+        // تحديث التقويم
+        function updateCalendar() {
+            const calendarDiv = document.getElementById('monthlyCalendar');
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            
+            // إنشاء تقويم بسيط
+            let calendarHTML = '<div class="calendar-grid">';
+            
+            // رؤوس الأيام
+            const dayNames = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+            dayNames.forEach(day => {
+                calendarHTML += `<div class="calendar-day-header">${day}</div>`;
+            });
+            
+            // أيام الشهر
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // إضافة أيام فارغة في بداية الشهر
+            for (let i = 0; i < firstDay; i++) {
+                calendarHTML += '<div class="calendar-day empty"></div>';
+            }
+            
+            // إضافة أيام الشهر
+            for (let day = 1; day <= lastDate; day++) {
+                const dayDate = new Date(currentYear, currentMonth, day);
+                const dayEvents = getEventsForDate(dayDate);
+                
+                calendarHTML += `<div class="calendar-day ${dayEvents.length > 0 ? 'has-events' : ''}">
+                    <div class="day-number">${day}</div>
+                    <div class="day-events">${dayEvents.slice(0, 2).map(e => `<div class="event">${e}</div>`).join('')}</div>
+                </div>`;
+            }
+            
+            calendarHTML += '</div>';
+            calendarDiv.innerHTML = calendarHTML;
+        }
+
+        // الحصول على الأحداث لتاريخ معين
+        function getEventsForDate(date) {
+            const events = [];
+            const dateString = date.toISOString().split('T')[0];
+            
+            // البحث عن الجلسات
+            sessions.forEach(session => {
+                if (session.date === dateString) {
+                    events.push(`⚖️ ${session.caseNumber}`);
+                }
+            });
+            
+            // البحث عن المهام
+            tasks.forEach(task => {
+                if (task.dueDate === dateString) {
+                    events.push(`📋 ${task.title}`);
+                }
+            });
+            
+            return events;
+        }
+
+        // تهيئة النظام
+        function initializeSystem() {
+            updateStats();
+            showTodayAlerts();
+            updateCalendar();
+            
+            // تحديث التنبيهات كل دقيقة
+            setInterval(() => {
+                showTodayAlerts();
+                updateStats();
+            }, 60000);
+        }
+
+        // بدء تشغيل النظام
+        document.addEventListener('DOMContentLoaded', initializeSystem);
+    </script>
+
+    <style>
+        .badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .badge-primary { background: #007bff; color: white; }
+        .badge-info { background: #17a2b8; color: white; }
+        .badge-warning { background: #ffc107; color: #212529; }
+        .badge-success { background: #28a745; color: white; }
+        .badge-danger { background: #dc3545; color: white; }
+        .badge-secondary { background: #6c757d; color: white; }
+        
+        .priority-badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .priority-normal { background: #28a745; color: white; }
+        .priority-important { background: #ffc107; color: #212529; }
+        .priority-urgent { background: #dc3545; color: white; }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-top: 20px;
+        }
+        
+        .calendar-day-header {
+            background: #1976d2;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .calendar-day {
+            background: white;
+            border: 1px solid #ddd;
+            min-height: 80px;
+            padding: 5px;
+            position: relative;
+        }
+        
+        .calendar-day.has-events {
+            background: #e3f2fd;
+            border-color: #1976d2;
+        }
+        
+        .calendar-day.empty {
+            background: #f5f5f5;
+        }
+        
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .day-events {
+            font-size: 10px;
+        }
+        
+        .event {
+            background: #1976d2;
+            color: white;
+            padding: 2px 4px;
+            margin: 1px 0;
+            border-radius: 3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+    </style>
 </body>
 </html>
+                
