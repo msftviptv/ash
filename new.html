@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>نظام مكتب المحاماة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
+    .container { display: none; max-width: 1200px; margin: auto; padding: 20px; }
+    h1, h2 { color: #333; }
+    input, select, textarea { width: 100%; padding: 10px; margin: 5px 0; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #1976d2; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #1565c0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+    th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+    th { background: #1976d2; color: white; }
+    .alert { padding: 10px; margin-top: 10px; border-radius: 6px; }
+    .success { background: #d4edda; color: #155724; }
+    .danger { background: #f8d7da; color: #721c24; }
+    .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
+    .tab-btn { background: #e0e0e0; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+    .tab-btn.active { background: #1976d2; color: white; }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    #loginScreen { max-width: 400px; margin: 100px auto; padding: 40px; background: white; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.1); text-align: center; }
+    #loginScreen input { margin-bottom: 15px; }
+  </style>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<!-- شاشة تسجيل الدخول -->
+<div id="loginScreen">
+  <h2>🔐 تسجيل الدخول</h2>
+  <input type="text" id="username" placeholder="اسم المستخدم">
+  <input type="password" id="password" placeholder="كلمة المرور">
+  <button onclick="login()">دخول</button>
+  <p id="loginError" class="danger"></p>
+</div>
+
+<!-- محتوى النظام -->
+<div class="container">
+  <h1>⚖️ نظام إدارة مكتب المحاماة</h1>
+  <div class="tabs">
+    <div class="tab-btn active" onclick="showTab('cases')">📂 القضايا</div>
+    <div class="tab-btn" onclick="showTab('clients')">👤 الموكلين</div>
+    <div class="tab-btn" onclick="showTab('sessions')">📅 الجلسات</div>
+    <div class="tab-btn" onclick="showTab('tasks')">📝 المهام</div>
+  </div>
+
+  <!-- الأقسام ستأتي هنا -->
+  <!-- القضايا -->
+  <div class="tab active" id="cases">
+    <h2>📂 إدارة القضايا</h2>
+    <input type="text" id="searchCase" placeholder="🔍 ابحث عن قضية..." oninput="filterCases()">
+
+    <div>
+      <input id="caseNumber" placeholder="رقم القضية">
+      <input id="caseName" placeholder="عنوان القضية">
+      <input id="caseType" placeholder="نوع القضية">
+      <input id="clientName" placeholder="اسم الموكل">
+      <input id="court" placeholder="المحكمة">
+      <input id="caseStatus" placeholder="الحالة">
+      <input id="caseStartDate" type="date">
+      <input id="caseFees" placeholder="الأتعاب">
+      <textarea id="caseNotes" placeholder="ملاحظات"></textarea>
+      <button onclick="addCase()">➕ حفظ القضية</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>رقم</th><th>عنوان</th><th>نوع</th><th>موكل</th><th>محكمة</th><th>حالة</th><th>تاريخ</th><th>أتعاب</th><th>إجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="casesTableBody"></tbody>
+    </table>
+  </div>
+  <!-- الموكلين -->
+<div class="tab" id="clients">
+  <h2>👤 إدارة الموكلين</h2>
+  <input type="text" id="searchClient" placeholder="🔍 ابحث عن موكل..." oninput="filterClients()">
+
+  <div>
+    <input id="clientFullName" placeholder="الاسم الكامل">
+    <input id="clientPhone" placeholder="رقم الهاتف">
+    <input id="clientEmail" placeholder="البريد الإلكتروني">
+    <input id="clientId" placeholder="الرقم القومي">
+    <textarea id="clientAddress" placeholder="العنوان"></textarea>
+    <select id="clientType">
+      <option>فرد</option>
+      <option>شركة</option>
+      <option>مؤسسة</option>
+    </select>
+    <button onclick="addClient()">➕ حفظ الموكل</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>الاسم</th><th>الهاتف</th><th>البريد</th><th>الرقم القومي</th><th>النوع</th><th>إجراءات</th>
+      </tr>
+    </thead>
+    <tbody id="clientsTableBody"></tbody>
+  </table>
+</div>
+<!-- الجلسات -->
+<div class="tab" id="sessions">
+  <h2>📅 إدارة الجلسات</h2>
+  <input type="text" id="searchSession" placeholder="🔍 ابحث برقم القضية..." oninput="filterSessions()">
+
+  <div>
+    <input id="sessionCaseNumber" placeholder="رقم القضية">
+    <input id="sessionDate" type="date" placeholder="تاريخ الجلسة">
+    <input id="sessionTime" type="time" placeholder="الوقت">
+    <input id="sessionCourt" placeholder="المحكمة">
+    <select id="sessionType">
+      <option>جلسة عادية</option>
+      <option>جلسة مرافعة</option>
+      <option>جلسة حكم</option>
+    </select>
+    <select id="sessionStatus">
+      <option>مجدولة</option>
+      <option>منعقدة</option>
+      <option>مؤجلة</option>
+    </select>
+    <textarea id="sessionNotes" placeholder="ملاحظات الجلسة"></textarea>
+    <button onclick="addSession()">➕ حفظ الجلسة</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>رقم القضية</th><th>التاريخ</th><th>الوقت</th><th>المحكمة</th><th>النوع</th><th>الحالة</th><th>إجراءات</th>
+      </tr>
+    </thead>
+    <tbody id="sessionsTableBody"></tbody>
+  </table>
+</div>
+<!-- المهام الإدارية -->
+<div class="tab" id="tasks">
+  <h2>📝 المهام الإدارية</h2>
+  <input type="text" id="searchTask" placeholder="🔍 ابحث في المهام..." oninput="filterTasks()">
+
+  <div>
+    <input id="taskTitle" placeholder="عنوان المهمة">
+    <input id="taskDate" type="date">
+    <textarea id="taskDetails" placeholder="تفاصيل المهمة"></textarea>
+    <button onclick="addTask()">➕ حفظ المهمة</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>التاريخ</th><th>العنوان</th><th>التفاصيل</th><th>إجراءات</th></tr>
+    </thead>
+    <tbody id="tasksTableBody"></tbody>
+  </table>
+</div>
+</div> <!-- نهاية .container -->
+</body>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCp3xqZstYOJRnaYZo3F3Zx0AunWEKxc7o",
+    authDomain: "atef-32e4b.firebaseapp.com",
+    projectId: "atef-32e4b",
+    storageBucket: "atef-32e4b.firebasestorage.app",
+    messagingSenderId: "974295300703",
+    appId: "1:974295300703:web:773285f8645d50b34a39ea"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  let cases = [];
+
+  function login() {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  if (user === "Atef" && pass === "2025") {
+    document.getElementById("loginScreen").style.display = "none";
+    document.querySelector(".container").style.display = "block";
+
+    // ✅ أضف هنا تحميل البيانات
+    loadCases();
+    loadClients();
+    loadSessions();
+    loadTasks();
+
+  } else {
+    document.getElementById("loginError").textContent = "❌ اسم المستخدم أو كلمة المرور غير صحيحة";
+  }
+}
+
+  function showTab(tabId) {
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function addCase() {
+    const data = {
+      number: caseNumber.value,
+      name: caseName.value,
+      type: caseType.value,
+      client: clientName.value,
+      court: court.value,
+      status: caseStatus.value,
+      startDate: caseStartDate.value,
+      fees: caseFees.value,
+      notes: caseNotes.value,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    db.collection("cases").add(data).then(() => {
+      loadCases();
+      clearCaseForm();
+    });
+  }
+
+  function clearCaseForm() {
+    ['caseNumber','caseName','caseType','clientName','court','caseStatus','caseStartDate','caseFees','caseNotes'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  function loadCases() {
+    db.collection("cases").orderBy("timestamp","desc").get().then(snapshot => {
+      cases = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+      renderCases(cases);
+    });
+  }
+
+  function renderCases(list) {
+    const body = document.getElementById("casesTableBody");
+    body.innerHTML = "";
+    list.forEach(item => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${item.number}</td><td>${item.name}</td><td>${item.type}</td><td>${item.client}</td><td>${item.court}</td>
+        <td>${item.status}</td><td>${item.startDate}</td><td>${item.fees}</td>
+        <td>
+          <button onclick="editCase('${item.id}')">✏️</button>
+          <button onclick="deleteCase('${item.id}')">🗑️</button>
+        </td>`;
+      body.appendChild(row);
+    });
+  }
+
+  function deleteCase(id) {
+    if (confirm("هل تريد حذف هذه القضية؟")) {
+      db.collection("cases").doc(id).delete().then(loadCases);
+    }
+  }
+
+  function editCase(id) {
+    const item = cases.find(c => c.id === id);
+    caseNumber.value = item.number;
+    caseName.value = item.name;
+    caseType.value = item.type;
+    clientName.value = item.client;
+    court.value = item.court;
+    caseStatus.value = item.status;
+    caseStartDate.value = item.startDate;
+    caseFees.value = item.fees;
+    caseNotes.value = item.notes;
+    deleteCase(id); // نحذفه ونضيفه كجديد بعد التعديل
+  }
+
+  function filterCases() {
+    const text = document.getElementById("searchCase").value.trim();
+    const filtered = cases.filter(c => c.name.includes(text) || c.number.includes(text));
+    renderCases(filtered);
+  }
+  let clients = [];
+
+function addClient() {
+  const data = {
+    name: clientFullName.value,
+    phone: clientPhone.value,
+    email: clientEmail.value,
+    idNumber: clientId.value,
+    address: clientAddress.value,
+    type: clientType.value,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  db.collection("clients").add(data).then(() => {
+    loadClients();
+    clearClientForm();
+  });
+}
+
+function clearClientForm() {
+  ['clientFullName','clientPhone','clientEmail','clientId','clientAddress'].forEach(id => document.getElementById(id).value = '');
+}
+
+function loadClients() {
+  db.collection("clients").orderBy("timestamp","desc").get().then(snapshot => {
+    clients = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+    renderClients(clients);
+  });
+}
+
+function renderClients(list) {
+  const body = document.getElementById("clientsTableBody");
+  body.innerHTML = "";
+  list.forEach(c => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${c.name}</td><td>${c.phone}</td><td>${c.email}</td><td>${c.idNumber}</td><td>${c.type}</td>
+      <td>
+        <button onclick="editClient('${c.id}')">✏️</button>
+        <button onclick="deleteClient('${c.id}')">🗑️</button>
+      </td>`;
+    body.appendChild(row);
+  });
+}
+
+function deleteClient(id) {
+  if (confirm("هل تريد حذف هذا الموكل؟")) {
+    db.collection("clients").doc(id).delete().then(loadClients);
+  }
+}
+
+function editClient(id) {
+  const c = clients.find(x => x.id === id);
+  clientFullName.value = c.name;
+  clientPhone.value = c.phone;
+  clientEmail.value = c.email;
+  clientId.value = c.idNumber;
+  clientAddress.value = c.address;
+  clientType.value = c.type;
+  deleteClient(id);
+}
+
+function filterClients() {
+  const text = searchClient.value.trim();
+  const filtered = clients.filter(c => c.name.includes(text) || c.phone.includes(text));
+  renderClients(filtered);
+}
+let sessions = [];
+
+function addSession() {
+  const data = {
+    caseNumber: sessionCaseNumber.value,
+    date: sessionDate.value,
+    time: sessionTime.value,
+    court: sessionCourt.value,
+    type: sessionType.value,
+    status: sessionStatus.value,
+    notes: sessionNotes.value,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  db.collection("sessions").add(data).then(() => {
+    loadSessions();
+    clearSessionForm();
+  });
+}
+
+function clearSessionForm() {
+  ['sessionCaseNumber','sessionDate','sessionTime','sessionCourt','sessionNotes'].forEach(id => document.getElementById(id).value = '');
+}
+
+function loadSessions() {
+  db.collection("sessions").orderBy("timestamp","desc").get().then(snapshot => {
+    sessions = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+    renderSessions(sessions);
+  });
+}
+
+function renderSessions(list) {
+  const body = document.getElementById("sessionsTableBody");
+  body.innerHTML = "";
+  list.forEach(s => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${s.caseNumber}</td><td>${s.date}</td><td>${s.time}</td><td>${s.court}</td><td>${s.type}</td><td>${s.status}</td>
+      <td>
+        <button onclick="editSession('${s.id}')">✏️</button>
+        <button onclick="deleteSession('${s.id}')">🗑️</button>
+      </td>`;
+    body.appendChild(row);
+  });
+}
+
+function deleteSession(id) {
+  if (confirm("هل تريد حذف هذه الجلسة؟")) {
+    db.collection("sessions").doc(id).delete().then(loadSessions);
+  }
+}
+
+function editSession(id) {
+  const s = sessions.find(x => x.id === id);
+  sessionCaseNumber.value = s.caseNumber;
+  sessionDate.value = s.date;
+  sessionTime.value = s.time;
+  sessionCourt.value = s.court;
+  sessionType.value = s.type;
+  sessionStatus.value = s.status;
+  sessionNotes.value = s.notes;
+  deleteSession(id);
+}
+
+function filterSessions() {
+  const text = searchSession.value.trim();
+  const filtered = sessions.filter(s => s.caseNumber.includes(text));
+  renderSessions(filtered);
+}
+let tasks = [];
+
+function addTask() {
+  const data = {
+    title: taskTitle.value,
+    date: taskDate.value,
+    details: taskDetails.value,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  db.collection("tasks").add(data).then(() => {
+    loadTasks();
+    clearTaskForm();
+  });
+}
+
+function clearTaskForm() {
+  ['taskTitle','taskDate','taskDetails'].forEach(id => document.getElementById(id).value = '');
+}
+
+function loadTasks() {
+  db.collection("tasks").orderBy("timestamp","desc").get().then(snapshot => {
+    tasks = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+    renderTasks(tasks);
+  });
+}
+
+function renderTasks(list) {
+  const body = document.getElementById("tasksTableBody");
+  body.innerHTML = "";
+  list.forEach(t => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${t.date}</td><td>${t.title}</td><td>${t.details}</td>
+      <td>
+        <button onclick="editTask('${t.id}')">✏️</button>
+        <button onclick="deleteTask('${t.id}')">🗑️</button>
+      </td>`;
+    body.appendChild(row);
+  });
+}
+
+function deleteTask(id) {
+  if (confirm("هل تريد حذف هذه المهمة؟")) {
+    db.collection("tasks").doc(id).delete().then(loadTasks);
+  }
+}
+
+function editTask(id) {
+  const t = tasks.find(x => x.id === id);
+  taskTitle.value = t.title;
+  taskDate.value = t.date;
+  taskDetails.value = t.details;
+  deleteTask(id);
+}
+
+function filterTasks() {
+  const text = searchTask.value.trim();
+  const filtered = tasks.filter(t => t.title.includes(text) || t.details.includes(text));
+  renderTasks(filtered);
+}
+
+</script>
+</html>
