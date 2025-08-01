@@ -717,19 +717,34 @@
         }
 
         // إضافة قضية جديدة
-        function addCase() {
-            const caseData = {
-                id: Date.now(),
-                number: document.getElementById('caseNumber').value,
-                name: document.getElementById('caseName').value,
-                type: document.getElementById('caseType').value,
-                client: document.getElementById('clientName').value,
-                court: document.getElementById('court').value,
-                status: document.getElementById('caseStatus').value,
-                startDate: document.getElementById('caseStartDate').value,
-                fees: document.getElementById('caseFees').value,
-                notes: document.getElementById('caseNotes').value
-            };
+       async function addCase() {
+    const caseData = {
+        number: document.getElementById('caseNumber').value,
+        name: document.getElementById('caseName').value,
+        type: document.getElementById('caseType').value,
+        client: document.getElementById('clientName').value,
+        court: document.getElementById('court').value,
+        status: document.getElementById('caseStatus').value,
+        startDate: document.getElementById('caseStartDate').value,
+        fees: document.getElementById('caseFees').value,
+        notes: document.getElementById('caseNotes').value
+    };
+
+    try {
+        const docRef = await db.collection("cases").add(caseData);
+        caseData.id = docRef.id;
+        cases.push(caseData);
+        updateCasesTable();
+        updateSessionCaseOptions();
+        updateStats();
+        clearCaseForm();
+        showAlert('✅ تم حفظ القضية في قاعدة البيانات', 'success');
+    } catch (error) {
+        console.error("❌ خطأ في إضافة القضية:", error);
+        showAlert('حدث خطأ أثناء الحفظ!', 'danger');
+    }
+}
+
             
             cases.push(caseData);
             updateCasesTable();
@@ -776,23 +791,30 @@
         }
 
         // إضافة موكل جديد
-        function addClient() {
-            const clientData = {
-                id: Date.now(),
-                name: document.getElementById('clientFullName').value,
-                phone: document.getElementById('clientPhone').value,
-                email: document.getElementById('clientEmail').value,
-                idNumber: document.getElementById('clientId').value,
-                address: document.getElementById('clientAddress').value,
-                type: document.getElementById('clientType').value
-            };
-            
-            clients.push(clientData);
-            updateClientsTable();
-            updateStats();
-            clearClientForm();
-            showAlert('تم إضافة الموكل بنجاح', 'success');
-        }
+        async function addClient() {
+    const clientData = {
+        name: document.getElementById('clientFullName').value,
+        phone: document.getElementById('clientPhone').value,
+        email: document.getElementById('clientEmail').value,
+        idNumber: document.getElementById('clientId').value,
+        address: document.getElementById('clientAddress').value,
+        type: document.getElementById('clientType').value
+    };
+
+    try {
+        const docRef = await db.collection("clients").add(clientData);
+        clientData.id = docRef.id;
+        clients.push(clientData);
+        updateClientsTable();
+        updateStats();
+        clearClientForm();
+        showAlert('✅ تم حفظ الموكل بنجاح', 'success');
+    } catch (error) {
+        console.error("❌ خطأ في إضافة الموكل:", error);
+        showAlert('حدث خطأ أثناء الحفظ!', 'danger');
+    }
+}
+
 
         // مسح نموذج الموكل
         function clearClientForm() {
@@ -828,24 +850,30 @@
         }
 
         // إضافة جلسة جديدة
-        function addSession() {
-            const sessionData = {
-                id: Date.now(),
-                caseNumber: document.getElementById('sessionCaseNumber').value,
-                date: document.getElementById('sessionDate').value,
-                time: document.getElementById('sessionTime').value,
-                court: document.getElementById('sessionCourt').value,
-                type: document.getElementById('sessionType').value,
-                status: document.getElementById('sessionStatus').value,
-                notes: document.getElementById('sessionNotes').value
-            };
-            
-            sessions.push(sessionData);
-            updateSessionsTable();
-            updateStats();
-            clearSessionForm();
-            showAlert('تم إضافة الجلسة بنجاح', 'success');
-        }
+       async function addSession() {
+    const sessionData = {
+        caseNumber: document.getElementById('sessionCaseNumber').value,
+        date: document.getElementById('sessionDate').value,
+        time: document.getElementById('sessionTime').value,
+        court: document.getElementById('sessionCourt').value,
+        type: document.getElementById('sessionType').value,
+        status: document.getElementById('sessionStatus').value,
+        notes: document.getElementById('sessionNotes').value
+    };
+
+    try {
+        const docRef = await db.collection("sessions").add(sessionData);
+        sessionData.id = docRef.id;
+        sessions.push(sessionData);
+        updateSessionsTable();
+        updateStats();
+        clearSessionForm();
+        showAlert('✅ تم حفظ الجلسة بنجاح', 'success');
+    } catch (error) {
+        console.error("❌ خطأ في إضافة الجلسة:", error);
+        showAlert('حدث خطأ أثناء الحفظ!', 'danger');
+    }
+}
 
         // مسح نموذج الجلسة
         function clearSessionForm() {
@@ -879,24 +907,30 @@
         }
 
         // إضافة مهمة جديدة
-        function addTask() {
-            const taskData = {
-                id: Date.now(),
-                title: document.getElementById('taskTitle').value,
-                type: document.getElementById('taskType').value,
-                priority: document.getElementById('taskPriority').value,
-                dueDate: document.getElementById('taskDueDate').value,
-                reminder: document.getElementById('taskReminder').value,
-                status: document.getElementById('taskStatus').value,
-                description: document.getElementById('taskDescription').value
-            };
-            
-            tasks.push(taskData);
-            updateTasksTable();
-            updateStats();
-            clearTaskForm();
-            showAlert('تم إضافة المهمة بنجاح', 'success');
-        }
+      async function addTask() {
+    const taskData = {
+        title: document.getElementById('taskTitle').value,
+        type: document.getElementById('taskType').value,
+        priority: document.getElementById('taskPriority').value,
+        dueDate: document.getElementById('taskDueDate').value,
+        reminder: document.getElementById('taskReminder').value,
+        status: document.getElementById('taskStatus').value,
+        description: document.getElementById('taskDescription').value
+    };
+
+    try {
+        const docRef = await db.collection("tasks").add(taskData);
+        taskData.id = docRef.id;
+        tasks.push(taskData);
+        updateTasksTable();
+        updateStats();
+        clearTaskForm();
+        showAlert('✅ تم حفظ المهمة بنجاح', 'success');
+    } catch (error) {
+        console.error("❌ خطأ في إضافة المهمة:", error);
+        showAlert('حدث خطأ أثناء الحفظ!', 'danger');
+    }
+}
 
         // مسح نموذج المهمة
         function clearTaskForm() {
@@ -1269,6 +1303,46 @@
             font-size: 12px;
         }
     </style>
+    <!-- Firebase Libraries -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCp3xqZstYOJRnaYZo3F3Zx0AunWEKxc7o",
+        authDomain: "atef-32e4b.firebaseapp.com",
+        projectId: "atef-32e4b",
+        appId: "1:974295300703:web:773285f8645d50b34a39ea"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function fetchDataFromFirestore() {
+        const collections = ['cases', 'clients', 'sessions', 'tasks'];
+        for (const col of collections) {
+            const snapshot = await db.collection(col).get();
+            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            if (col === 'cases') cases = data;
+            else if (col === 'clients') clients = data;
+            else if (col === 'sessions') sessions = data;
+            else if (col === 'tasks') tasks = data;
+        }
+        updateStats();
+        updateCasesTable();
+        updateClientsTable();
+        updateSessionsTable();
+        updateTasksTable();
+        updateSessionCaseOptions();
+        updateCalendar();
+        showTodayAlerts();
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await fetchDataFromFirestore();
+        initializeSystem();
+    });
+</script>
+
 </body>
 </html>
                 
