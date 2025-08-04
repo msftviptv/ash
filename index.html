@@ -4,12 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام إدارة مكتب المحاماة</title>
-    
-    <!-- إضافة Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    
     <style>
+        /* أنماط تسجيل الدخول */
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.5s ease;
+        }
+        
+        .login-form {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            transform: scale(0.95);
+            animation: popIn 0.4s forwards;
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .login-header {
+            margin-bottom: 30px;
+        }
+        
+        .login-header h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin: 0 0 10px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .login-header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            text-align: right;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 10px rgba(25, 118, 210, 0.3);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #1976d2, #1565c0);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(25, 118, 210, 0.4);
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            margin-top: 15px;
+            font-weight: bold;
+            height: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .security-tips {
+            margin-top: 30px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .security-tips h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .security-tips ul {
+            padding-right: 20px;
+            text-align: right;
+        }
+        
+        .security-tips li {
+            margin-bottom: 8px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* أنماط النظام الأساسي (يجب أن تبقى كما هي مع تعديلات بسيطة) */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -167,6 +293,14 @@
             background: linear-gradient(45deg, #17a2b8, #138496);
         }
         
+        .btn-logout {
+            background: linear-gradient(45deg, #6c757d, #5a6268);
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+        
         .table-container {
             background: white;
             border-radius: 15px;
@@ -298,45 +432,6 @@
             box-shadow: 0 8px 25px rgba(255,255,255,0.3);
         }
         
-        .firebase-status {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            z-index: 1000;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .firebase-connected {
-            background-color: #4caf50;
-            color: white;
-        }
-        
-        .firebase-disconnected {
-            background-color: #f44336;
-            color: white;
-        }
-        
-        .sync-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #4caf50;
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        
         .badge {
             padding: 5px 10px;
             border-radius: 15px;
@@ -418,98 +513,48 @@
             padding: 5px 10px;
             font-size: 12px;
         }
-        
-        .firebase-config-panel {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
-            max-width: 400px;
-            display: none;
-        }
-        
-        .firebase-config-panel h3 {
-            margin-top: 0;
-            color: #1976d2;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-        }
-        
-        .config-form-group {
-            margin-bottom: 15px;
-        }
-        
-        .config-form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .config-form-group input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .config-buttons {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .config-buttons button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .btn-save-config {
-            background: #4caf50;
-            color: white;
-        }
-        
-        .btn-close-config {
-            background: #f44336;
-            color: white;
-        }
     </style>
 </head>
 <body>
-    <!-- لوحة إعدادات Firebase -->
-    <div class="firebase-config-panel" id="firebaseConfigPanel">
-        <h3>إعدادات Firebase</h3>
-        <div class="config-form-group">
-            <label for="apiKey">API Key:</label>
-            <input type="text" id="apiKey" placeholder="أدخل API Key">
-        </div>
-        <div class="config-form-group">
-            <label for="authDomain">Auth Domain:</label>
-            <input type="text" id="authDomain" placeholder="أدخل Auth Domain">
-        </div>
-        <div class="config-form-group">
-            <label for="databaseURL">Database URL:</label>
-            <input type="text" id="databaseURL" placeholder="أدخل Database URL">
-        </div>
-        <div class="config-form-group">
-            <label for="projectId">Project ID:</label>
-            <input type="text" id="projectId" placeholder="أدخل Project ID">
-        </div>
-        <div class="config-buttons">
-            <button class="btn-save-config" onclick="saveFirebaseConfig()">حفظ الإعدادات</button>
-            <button class="btn-close-config" onclick="document.getElementById('firebaseConfigPanel').style.display = 'none'">إغلاق</button>
+    <!-- صفحة تسجيل الدخول -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-form">
+            <div class="login-header">
+                <h1>نظام إدارة مكتب المحاماة</h1>
+                <p>الرجاء تسجيل الدخول للوصول إلى النظام</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="username">اسم المستخدم:</label>
+                <input type="text" id="username" placeholder="أدخل اسم المستخدم">
+            </div>
+            
+            <div class="input-group">
+                <label for="password">كلمة المرور:</label>
+                <input type="password" id="password" placeholder="أدخل كلمة المرور">
+            </div>
+            
+            <button class="login-btn" onclick="login()">تسجيل الدخول</button>
+            
+            <div id="errorMessage" class="error-message"></div>
+            
+            <div class="security-tips">
+                <h3>نصائح أمنية:</h3>
+                <ul>
+                    <li>لا تشارك بيانات الدخول مع أي شخص</li>
+                    <li>تأكد من تسجيل الخروج بعد الانتهاء</li>
+                    <li>استخدم كلمات مرور قوية وفريدة</li>
+                    <li>تحديث كلمة المرور بانتظام</li>
+                </ul>
+            </div>
         </div>
     </div>
-
-    <div class="container">
+    
+    <!-- النظام الرئيسي (يظهر بعد تسجيل الدخول) -->
+    <div class="container" id="mainContainer" style="display:none;">
+        <!-- زر تسجيل الخروج -->
+        <button class="btn btn-logout" onclick="logout()">تسجيل الخروج</button>
+        
         <div class="header">
             <h1>⚖️ نظام إدارة مكتب المحاماة</h1>
             <p>نظام متكامل لإدارة القضايا والموكلين والجلسات</p>
@@ -549,7 +594,6 @@
             <button class="tab-button" onclick="showTab('sessions')">⚖️ الجلسات</button>
             <button class="tab-button" onclick="showTab('tasks')">📝 المهام الإدارية</button>
             <button class="tab-button" onclick="showTab('calendar')">📅 التقويم</button>
-            <button class="tab-button btn-info" onclick="document.getElementById('firebaseConfigPanel').style.display = 'block'">⚙️ إعدادات Firebase</button>
         </div>
 
         <!-- محتوى الرئيسية -->
@@ -869,153 +913,65 @@
     </div>
 
     <script>
-        // تهيئة Firebase
-        let firebaseInitialized = false;
-        let database;
-        let casesRef, clientsRef, sessionsRef, tasksRef;
+        // إدارة تسجيل الدخول
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // بيانات الدخول الصحيحة
+            const validUsername = "Atef";
+            const validPassword = "2025";
+            
+            if(username === validUsername && password === validPassword) {
+                // تسجيل الدخول ناجح
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+                
+                // تهيئة النظام بعد تسجيل الدخول
+                initializeSystem();
+            } else {
+                // تسجيل الدخول فاشل
+                errorMessage.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة';
+                errorMessage.style.display = 'block';
+                
+                // اهتزاز النموذج للإشارة إلى الخطأ
+                document.querySelector('.login-form').animate([
+                    { transform: 'translateX(0)' },
+                    { transform: 'translateX(-10px)' },
+                    { transform: 'translateX(10px)' },
+                    { transform: 'translateX(-10px)' },
+                    { transform: 'translateX(10px)' },
+                    { transform: 'translateX(0)' }
+                ], {
+                    duration: 500
+                });
+            }
+        }
         
-        // حالة الاتصال بـ Firebase
-        const firebaseStatusElement = document.createElement('div');
-        firebaseStatusElement.className = 'firebase-status firebase-disconnected';
-        firebaseStatusElement.innerHTML = '<span class="sync-indicator"></span> غير متصل بـ Firebase';
-        document.body.appendChild(firebaseStatusElement);
+        // تسجيل الخروج
+        function logout() {
+            if(confirm('هل أنت متأكد أنك تريد تسجيل الخروج؟')) {
+                document.getElementById('loginContainer').style.display = 'flex';
+                document.getElementById('mainContainer').style.display = 'none';
+                
+                // إعادة تعيين حقول الدخول
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('errorMessage').textContent = '';
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+        }
         
         // البيانات المحلية
         let cases = [];
         let clients = [];
         let sessions = [];
         let tasks = [];
-        
-        // تهيئة Firebase
-        function initializeFirebase(config) {
-            try {
-                if (firebaseInitialized) return;
-                
-                firebase.initializeApp(config);
-                database = firebase.database();
-                
-                // إنشاء مراجع لقواعد البيانات
-                casesRef = database.ref('cases');
-                clientsRef = database.ref('clients');
-                sessionsRef = database.ref('sessions');
-                tasksRef = database.ref('tasks');
-                
-                // تحديث حالة الاتصال
-                firebaseStatusElement.className = 'firebase-status firebase-connected';
-                firebaseStatusElement.innerHTML = '<span class="sync-indicator"></span> متصل بـ Firebase';
-                
-                firebaseInitialized = true;
-                showAlert('تم الاتصال بنجاح بـ Firebase', 'success');
-                
-                // تحميل البيانات من Firebase
-                loadDataFromFirebase();
-                
-                // مراقبة حالة الاتصال
-                database.ref(".info/connected").on("value", (snapshot) => {
-                    if (snapshot.val() === true) {
-                        firebaseStatusElement.className = 'firebase-status firebase-connected';
-                        firebaseStatusElement.innerHTML = '<span class="sync-indicator"></span> متصل بـ Firebase';
-                    } else {
-                        firebaseStatusElement.className = 'firebase-status firebase-disconnected';
-                        firebaseStatusElement.innerHTML = '<span class="sync-indicator"></span> غير متصل بـ Firebase';
-                    }
-                });
-                
-                return true;
-            } catch (error) {
-                showAlert(`خطأ في تهيئة Firebase: ${error.message}`, 'danger');
-                return false;
-            }
-        }
-        
-        // تحميل البيانات من Firebase
-        function loadDataFromFirebase() {
-            if (!firebaseInitialized) return;
-            
-            // تحميل القضايا
-            casesRef.on('value', (snapshot) => {
-                cases = [];
-                snapshot.forEach((childSnapshot) => {
-                    const caseItem = childSnapshot.val();
-                    caseItem.id = childSnapshot.key;
-                    cases.push(caseItem);
-                });
-                updateCasesTable();
-                updateSessionCaseOptions();
-                updateStats();
-            });
-            
-            // تحميل الموكلين
-            clientsRef.on('value', (snapshot) => {
-                clients = [];
-                snapshot.forEach((childSnapshot) => {
-                    const client = childSnapshot.val();
-                    client.id = childSnapshot.key;
-                    clients.push(client);
-                });
-                updateClientsTable();
-                updateStats();
-            });
-            
-            // تحميل الجلسات
-            sessionsRef.on('value', (snapshot) => {
-                sessions = [];
-                snapshot.forEach((childSnapshot) => {
-                    const session = childSnapshot.val();
-                    session.id = childSnapshot.key;
-                    sessions.push(session);
-                });
-                updateSessionsTable();
-                updateStats();
-            });
-            
-            // تحميل المهام
-            tasksRef.on('value', (snapshot) => {
-                tasks = [];
-                snapshot.forEach((childSnapshot) => {
-                    const task = childSnapshot.val();
-                    task.id = childSnapshot.key;
-                    tasks.push(task);
-                });
-                updateTasksTable();
-                updateStats();
-            });
-        }
-        
-        // حفظ إعدادات Firebase
-        function saveFirebaseConfig() {
-            const config = {
-                apiKey: document.getElementById('apiKey').value,
-                authDomain: document.getElementById('authDomain').value,
-                databaseURL: document.getElementById('databaseURL').value,
-                projectId: document.getElementById('projectId').value
-            };
-            
-            localStorage.setItem('firebaseConfig', JSON.stringify(config));
-            
-            if (initializeFirebase(config)) {
-                document.getElementById('firebaseConfigPanel').style.display = 'none';
-            }
-        }
-        
-        // محاولة تحميل الإعدادات المحفوظة
-        function loadSavedConfig() {
-            const savedConfig = localStorage.getItem('firebaseConfig');
-            if (savedConfig) {
-                const config = JSON.parse(savedConfig);
-                document.getElementById('apiKey').value = config.apiKey || '';
-                document.getElementById('authDomain').value = config.authDomain || '';
-                document.getElementById('databaseURL').value = config.databaseURL || '';
-                document.getElementById('projectId').value = config.projectId || '';
-                
-                // محاولة التهيئة بالإعدادات المحفوظة
-                initializeFirebase(config);
-            }
-        }
-        
+
         // عرض التاريخ الحالي
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ar-EG');
-        
+
         // تحديث الإحصائيات
         function updateStats() {
             document.getElementById('totalCases').textContent = cases.length;
@@ -1032,7 +988,7 @@
             ).length;
             document.getElementById('pendingTasks').textContent = pendingTasks;
         }
-        
+
         // عرض التنبيهات اليومية
         function showTodayAlerts() {
             const today = new Date().toDateString();
@@ -1063,7 +1019,7 @@
                 alertsList.innerHTML = alerts.map(alert => `<div class="alert alert-warning">${alert}</div>`).join('');
             }
         }
-        
+
         // التنقل بين الصفحات
         function showTab(tabName) {
             // إخفاء جميع المحتويات
@@ -1078,10 +1034,11 @@
             buttons.forEach(button => button.classList.remove('active'));
             event.target.classList.add('active');
         }
-        
+
         // إضافة قضية جديدة
         function addCase() {
             const caseData = {
+                id: Date.now(),
                 number: document.getElementById('caseNumber').value,
                 name: document.getElementById('caseName').value,
                 type: document.getElementById('caseType').value,
@@ -1093,29 +1050,14 @@
                 notes: document.getElementById('caseNotes').value
             };
             
-            if (!firebaseInitialized) {
-                // إذا لم يكن متصلاً بـ Firebase، استخدم التخزين المحلي
-                caseData.id = Date.now().toString();
-                cases.push(caseData);
-                updateCasesTable();
-                updateSessionCaseOptions();
-                updateStats();
-                clearCaseForm();
-                showAlert('تم إضافة القضية بنجاح (تخزين محلي)', 'success');
-                return;
-            }
-            
-            // إرسال البيانات إلى Firebase
-            casesRef.push(caseData)
-                .then(() => {
-                    showAlert('تم إضافة القضية بنجاح', 'success');
-                    clearCaseForm();
-                })
-                .catch(error => {
-                    showAlert(`خطأ في إضافة القضية: ${error.message}`, 'danger');
-                });
+            cases.push(caseData);
+            updateCasesTable();
+            updateSessionCaseOptions();
+            updateStats();
+            clearCaseForm();
+            showAlert('تم إضافة القضية بنجاح', 'success');
         }
-        
+
         // مسح نموذج القضية
         function clearCaseForm() {
             document.getElementById('caseNumber').value = '';
@@ -1126,7 +1068,7 @@
             document.getElementById('caseFees').value = '';
             document.getElementById('caseNotes').value = '';
         }
-        
+
         // تحديث جدول القضايا
         function updateCasesTable() {
             const tbody = document.getElementById('casesTableBody');
@@ -1144,17 +1086,18 @@
                     <td>${caseItem.startDate}</td>
                     <td>${caseItem.fees ? caseItem.fees + ' جنيه' : '-'}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="editCase('${caseItem.id}')">تعديل</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteCase('${caseItem.id}')">حذف</button>
+                        <button class="btn btn-sm btn-warning" onclick="editCase(${caseItem.id})">تعديل</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCase(${caseItem.id})">حذف</button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
         }
-        
+
         // إضافة موكل جديد
         function addClient() {
             const clientData = {
+                id: Date.now(),
                 name: document.getElementById('clientFullName').value,
                 phone: document.getElementById('clientPhone').value,
                 email: document.getElementById('clientEmail').value,
@@ -1163,28 +1106,13 @@
                 type: document.getElementById('clientType').value
             };
             
-            if (!firebaseInitialized) {
-                // إذا لم يكن متصلاً بـ Firebase، استخدم التخزين المحلي
-                clientData.id = Date.now().toString();
-                clients.push(clientData);
-                updateClientsTable();
-                updateStats();
-                clearClientForm();
-                showAlert('تم إضافة الموكل بنجاح (تخزين محلي)', 'success');
-                return;
-            }
-            
-            // إرسال البيانات إلى Firebase
-            clientsRef.push(clientData)
-                .then(() => {
-                    showAlert('تم إضافة الموكل بنجاح', 'success');
-                    clearClientForm();
-                })
-                .catch(error => {
-                    showAlert(`خطأ في إضافة الموكل: ${error.message}`, 'danger');
-                });
+            clients.push(clientData);
+            updateClientsTable();
+            updateStats();
+            clearClientForm();
+            showAlert('تم إضافة الموكل بنجاح', 'success');
         }
-        
+
         // مسح نموذج الموكل
         function clearClientForm() {
             document.getElementById('clientFullName').value = '';
@@ -1193,7 +1121,7 @@
             document.getElementById('clientId').value = '';
             document.getElementById('clientAddress').value = '';
         }
-        
+
         // تحديث جدول الموكلين
         function updateClientsTable() {
             const tbody = document.getElementById('clientsTableBody');
@@ -1210,17 +1138,18 @@
                     <td>${client.type}</td>
                     <td>${clientCases}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="editClient('${client.id}')">تعديل</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteClient('${client.id}')">حذف</button>
+                        <button class="btn btn-sm btn-warning" onclick="editClient(${client.id})">تعديل</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteClient(${client.id})">حذف</button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
         }
-        
+
         // إضافة جلسة جديدة
         function addSession() {
             const sessionData = {
+                id: Date.now(),
                 caseNumber: document.getElementById('sessionCaseNumber').value,
                 date: document.getElementById('sessionDate').value,
                 time: document.getElementById('sessionTime').value,
@@ -1230,28 +1159,13 @@
                 notes: document.getElementById('sessionNotes').value
             };
             
-            if (!firebaseInitialized) {
-                // إذا لم يكن متصلاً بـ Firebase، استخدم التخزين المحلي
-                sessionData.id = Date.now().toString();
-                sessions.push(sessionData);
-                updateSessionsTable();
-                updateStats();
-                clearSessionForm();
-                showAlert('تم إضافة الجلسة بنجاح (تخزين محلي)', 'success');
-                return;
-            }
-            
-            // إرسال البيانات إلى Firebase
-            sessionsRef.push(sessionData)
-                .then(() => {
-                    showAlert('تم إضافة الجلسة بنجاح', 'success');
-                    clearSessionForm();
-                })
-                .catch(error => {
-                    showAlert(`خطأ في إضافة الجلسة: ${error.message}`, 'danger');
-                });
+            sessions.push(sessionData);
+            updateSessionsTable();
+            updateStats();
+            clearSessionForm();
+            showAlert('تم إضافة الجلسة بنجاح', 'success');
         }
-        
+
         // مسح نموذج الجلسة
         function clearSessionForm() {
             document.getElementById('sessionDate').value = '';
@@ -1259,7 +1173,7 @@
             document.getElementById('sessionCourt').value = '';
             document.getElementById('sessionNotes').value = '';
         }
-        
+
         // تحديث جدول الجلسات
         function updateSessionsTable() {
             const tbody = document.getElementById('sessionsTableBody');
@@ -1275,17 +1189,18 @@
                     <td>${session.type}</td>
                     <td><span class="badge ${getStatusBadgeClass(session.status)}">${session.status}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="editSession('${session.id}')">تعديل</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteSession('${session.id}')">حذف</button>
+                        <button class="btn btn-sm btn-warning" onclick="editSession(${session.id})">تعديل</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteSession(${session.id})">حذف</button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
         }
-        
+
         // إضافة مهمة جديدة
         function addTask() {
             const taskData = {
+                id: Date.now(),
                 title: document.getElementById('taskTitle').value,
                 type: document.getElementById('taskType').value,
                 priority: document.getElementById('taskPriority').value,
@@ -1295,28 +1210,13 @@
                 description: document.getElementById('taskDescription').value
             };
             
-            if (!firebaseInitialized) {
-                // إذا لم يكن متصلاً بـ Firebase، استخدم التخزين المحلي
-                taskData.id = Date.now().toString();
-                tasks.push(taskData);
-                updateTasksTable();
-                updateStats();
-                clearTaskForm();
-                showAlert('تم إضافة المهمة بنجاح (تخزين محلي)', 'success');
-                return;
-            }
-            
-            // إرسال البيانات إلى Firebase
-            tasksRef.push(taskData)
-                .then(() => {
-                    showAlert('تم إضافة المهمة بنجاح', 'success');
-                    clearTaskForm();
-                })
-                .catch(error => {
-                    showAlert(`خطأ في إضافة المهمة: ${error.message}`, 'danger');
-                });
+            tasks.push(taskData);
+            updateTasksTable();
+            updateStats();
+            clearTaskForm();
+            showAlert('تم إضافة المهمة بنجاح', 'success');
         }
-        
+
         // مسح نموذج المهمة
         function clearTaskForm() {
             document.getElementById('taskTitle').value = '';
@@ -1324,7 +1224,7 @@
             document.getElementById('taskReminder').value = '';
             document.getElementById('taskDescription').value = '';
         }
-        
+
         // تحديث جدول المهام
         function updateTasksTable() {
             const tbody = document.getElementById('tasksTableBody');
@@ -1339,14 +1239,14 @@
                     <td>${task.dueDate}</td>
                     <td><span class="badge ${getStatusBadgeClass(task.status)}">${task.status}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="editTask('${task.id}')">تعديل</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteTask('${task.id}')">حذف</button>
+                        <button class="btn btn-sm btn-warning" onclick="editTask(${task.id})">تعديل</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})">حذف</button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
         }
-        
+
         // تحديث خيارات القضايا في الجلسات
         function updateSessionCaseOptions() {
             const select = document.getElementById('sessionCaseNumber');
@@ -1359,7 +1259,7 @@
                 select.appendChild(option);
             });
         }
-        
+
         // دوال مساعدة للتصميم
         function getStatusBadgeClass(status) {
             const statusClasses = {
@@ -1376,7 +1276,7 @@
             };
             return statusClasses[status] || 'badge-secondary';
         }
-        
+
         function getPriorityClass(priority) {
             const priorityClasses = {
                 'عادية': 'priority-normal',
@@ -1385,7 +1285,7 @@
             };
             return priorityClasses[priority] || 'priority-normal';
         }
-        
+
         // عرض التنبيهات
         function showAlert(message, type) {
             const alertDiv = document.createElement('div');
@@ -1398,96 +1298,44 @@
                 alertDiv.remove();
             }, 3000);
         }
-        
+
         // دوال الحذف
         function deleteCase(id) {
             if (confirm('هل أنت متأكد من حذف هذه القضية؟')) {
-                if (!firebaseInitialized) {
-                    // حذف محلي
-                    cases = cases.filter(c => c.id !== id);
-                    updateCasesTable();
-                    updateStats();
-                    showAlert('تم حذف القضية بنجاح (تخزين محلي)', 'success');
-                    return;
-                }
-                
-                // حذف من Firebase
-                casesRef.child(id).remove()
-                    .then(() => {
-                        showAlert('تم حذف القضية بنجاح', 'success');
-                    })
-                    .catch(error => {
-                        showAlert(`خطأ في حذف القضية: ${error.message}`, 'danger');
-                    });
+                cases = cases.filter(c => c.id !== id);
+                updateCasesTable();
+                updateStats();
+                showAlert('تم حذف القضية بنجاح', 'success');
             }
         }
-        
+
         function deleteClient(id) {
             if (confirm('هل أنت متأكد من حذف هذا الموكل؟')) {
-                if (!firebaseInitialized) {
-                    // حذف محلي
-                    clients = clients.filter(c => c.id !== id);
-                    updateClientsTable();
-                    updateStats();
-                    showAlert('تم حذف الموكل بنجاح (تخزين محلي)', 'success');
-                    return;
-                }
-                
-                // حذف من Firebase
-                clientsRef.child(id).remove()
-                    .then(() => {
-                        showAlert('تم حذف الموكل بنجاح', 'success');
-                    })
-                    .catch(error => {
-                        showAlert(`خطأ في حذف الموكل: ${error.message}`, 'danger');
-                    });
+                clients = clients.filter(c => c.id !== id);
+                updateClientsTable();
+                updateStats();
+                showAlert('تم حذف الموكل بنجاح', 'success');
             }
         }
-        
+
         function deleteSession(id) {
             if (confirm('هل أنت متأكد من حذف هذه الجلسة؟')) {
-                if (!firebaseInitialized) {
-                    // حذف محلي
-                    sessions = sessions.filter(s => s.id !== id);
-                    updateSessionsTable();
-                    updateStats();
-                    showAlert('تم حذف الجلسة بنجاح (تخزين محلي)', 'success');
-                    return;
-                }
-                
-                // حذف من Firebase
-                sessionsRef.child(id).remove()
-                    .then(() => {
-                        showAlert('تم حذف الجلسة بنجاح', 'success');
-                    })
-                    .catch(error => {
-                        showAlert(`خطأ في حذف الجلسة: ${error.message}`, 'danger');
-                    });
+                sessions = sessions.filter(s => s.id !== id);
+                updateSessionsTable();
+                updateStats();
+                showAlert('تم حذف الجلسة بنجاح', 'success');
             }
         }
-        
+
         function deleteTask(id) {
             if (confirm('هل أنت متأكد من حذف هذه المهمة؟')) {
-                if (!firebaseInitialized) {
-                    // حذف محلي
-                    tasks = tasks.filter(t => t.id !== id);
-                    updateTasksTable();
-                    updateStats();
-                    showAlert('تم حذف المهمة بنجاح (تخزين محلي)', 'success');
-                    return;
-                }
-                
-                // حذف من Firebase
-                tasksRef.child(id).remove()
-                    .then(() => {
-                        showAlert('تم حذف المهمة بنجاح', 'success');
-                    })
-                    .catch(error => {
-                        showAlert(`خطأ في حذف المهمة: ${error.message}`, 'danger');
-                    });
+                tasks = tasks.filter(t => t.id !== id);
+                updateTasksTable();
+                updateStats();
+                showAlert('تم حذف المهمة بنجاح', 'success');
             }
         }
-        
+
         // تحميل ملف Excel
         function downloadExcel() {
             const workbook = createExcelWorkbook();
@@ -1501,7 +1349,7 @@
                 downloadCSV(csvContent, filename.replace('.xlsx', '.csv'));
             }, 1000);
         }
-        
+
         // إنشاء محتوى CSV
         function createCSVContent() {
             let csvContent = "البيانات الخاصة بمكتب المحاماة\n\n";
@@ -1542,7 +1390,7 @@
             
             return csvContent;
         }
-        
+
         // تحميل ملف CSV
         function downloadCSV(content, filename) {
             const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
@@ -1559,7 +1407,7 @@
                 showAlert('تم تحميل الملف بنجاح', 'success');
             }
         }
-        
+
         // تحميل النماذج المنفصلة
         function downloadTemplates() {
             const templates = [
@@ -1577,7 +1425,7 @@
             
             showAlert('جاري تحميل النماذج...', 'info');
         }
-        
+
         // تحديث التقويم
         function updateCalendar() {
             const calendarDiv = document.getElementById('monthlyCalendar');
@@ -1617,7 +1465,7 @@
             calendarHTML += '</div>';
             calendarDiv.innerHTML = calendarHTML;
         }
-        
+
         // الحصول على الأحداث لتاريخ معين
         function getEventsForDate(date) {
             const events = [];
@@ -1639,13 +1487,9 @@
             
             return events;
         }
-        
+
         // تهيئة النظام
         function initializeSystem() {
-            // تحميل الإعدادات المحفوظة
-            loadSavedConfig();
-            
-            // تحديث الإحصائيات
             updateStats();
             showTodayAlerts();
             updateCalendar();
@@ -1656,9 +1500,6 @@
                 updateStats();
             }, 60000);
         }
-        
-        // بدء تشغيل النظام
-        document.addEventListener('DOMContentLoaded', initializeSystem);
     </script>
 </body>
 </html>
