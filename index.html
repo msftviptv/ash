@@ -484,6 +484,35 @@
     </style>
 </head>
 <body>
+
+<div id="loginOverlay" style="
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <div style="
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    width: 300px;
+    text-align: center;
+  ">
+    <h2>تسجيل الدخول</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم" style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc;">
+    <input type="password" id="password" placeholder="كلمة المرور" style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc;">
+    <button onclick="login()" style="padding: 10px 20px; background: #1976d2; color: white; border: none; border-radius: 25px; cursor: pointer;">دخول</button>
+    <div id="errorMsg" style="color: red; margin-top: 10px;"></div>
+  </div>
+</div>
+
     <!-- لوحة إعدادات Firebase -->
     <div class="firebase-config-panel" id="firebaseConfigPanel">
         <h3>إعدادات Firebase</h3>
@@ -1660,5 +1689,25 @@
         // بدء تشغيل النظام
         document.addEventListener('DOMContentLoaded', initializeSystem);
     </script>
+
+<script>
+  function login() {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+
+    if (user === 'Atef' && pass === '2025') {
+      document.getElementById('loginOverlay').style.display = 'none';
+      document.body.style.overflow = '';
+    } else {
+      document.getElementById('errorMsg').innerText = 'اسم المستخدم أو كلمة المرور غير صحيحة';
+    }
+  }
+
+  // منع الوصول المباشر عن طريق إخفاء المحتوى حتى التحقق
+  window.addEventListener('DOMContentLoaded', () => {
+    document.body.style.overflow = 'hidden';
+  });
+</script>
+
 </body>
 </html>
